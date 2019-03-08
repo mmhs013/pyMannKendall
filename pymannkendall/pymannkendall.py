@@ -181,7 +181,7 @@ def seasonal_sens_slope(x, period=12):
         
     return np.median(d)
 
-def mk_test(x, alpha = 0.05):
+def original_test(x, alpha = 0.05):
     """
     This function check Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert
     1987).
@@ -216,7 +216,7 @@ def mk_test(x, alpha = 0.05):
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def mmkh_test(x, alpha = 0.05, lag=None):
+def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
     """
     This function check Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
     Input:
@@ -236,7 +236,7 @@ def mmkh_test(x, alpha = 0.05, lag=None):
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope = mmkh_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_Hamed_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_MK_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -277,9 +277,9 @@ def mmkh_test(x, alpha = 0.05, lag=None):
         
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def mmky_test(x, alpha = 0.05, lag=None):
+def yue_wang_modification_test(x, alpha = 0.05, lag=None):
     """
-    Input: This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2004).
+    Input: This function check Modified Mann-Kendall (MK) test using Yue and Wang (2004) method.
         x:   a vector of data
         alpha: significance level (0.05 default)
         lag: No. of First Significant Lags (default None, You can use 1 for considering first 1 lags, which also proposed by Yue and Wang (2004))
@@ -296,7 +296,7 @@ def mmky_test(x, alpha = 0.05, lag=None):
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope = mmky_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_Yue_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_MK_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -329,7 +329,7 @@ def mmky_test(x, alpha = 0.05, lag=None):
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def mmkpw_test(x, alpha = 0.05):
+def pre_whitening_modification_test(x, alpha = 0.05):
     """
     This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
@@ -369,7 +369,7 @@ def mmkpw_test(x, alpha = 0.05):
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def mmktfpw_test(x, alpha = 0.05):
+def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     """
     This function check Modified Mann-Kendall (MK) test using trend-free Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
@@ -387,7 +387,7 @@ def mmktfpw_test(x, alpha = 0.05):
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope = mmktfpw_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_MK_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
@@ -416,7 +416,7 @@ def mmktfpw_test(x, alpha = 0.05):
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def multivariate_mk_test(x, alpha = 0.05):
+def multivariate_test(x, alpha = 0.05):
     """
     This function check Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test
     Input:
@@ -465,7 +465,7 @@ def multivariate_mk_test(x, alpha = 0.05):
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def seasonal_mk_test(x, period = 12, alpha = 0.05):
+def seasonal_test(x, period = 12, alpha = 0.05):
     """
     This function check Seasonal Mann-Kendall (MK) test (Hirsch, R. M., Slack, J. R. 1984).
     Input:
@@ -495,12 +495,12 @@ def seasonal_mk_test(x, period = 12, alpha = 0.05):
 
         x = x.reshape(int(len(x)/period),period)
     
-    trend, h, p, z, Tau, s, var_s, slope = multivariate_mk_test(x, alpha = alpha)
+    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x, alpha = alpha)
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def regional_mk_test(x, alpha = 0.05):
+def regional_test(x, alpha = 0.05):
     """
     This function check Regional Mann-Kendall (MK) test (Helsel 2006).
     Input:
@@ -522,12 +522,12 @@ def regional_mk_test(x, alpha = 0.05):
     """
     res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
-    trend, h, p, z, Tau, s, var_s, slope = multivariate_mk_test(x)
+    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x)
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def correlated_multivariate_mk_test(x, alpha = 0.05):
+def correlated_multivariate_test(x, alpha = 0.05):
     """
     This function check Correlated Multivariate Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
@@ -586,7 +586,7 @@ def correlated_multivariate_mk_test(x, alpha = 0.05):
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def correlated_seasonal_mk_test(x, period = 12 ,alpha = 0.05):
+def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
     """
     This function check Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
     Input:
@@ -616,12 +616,12 @@ def correlated_seasonal_mk_test(x, period = 12 ,alpha = 0.05):
 
         x = x.reshape(int(len(x)/period),period)
     
-    trend, h, p, z, Tau, s, var_s, slope = correlated_multivariate_mk_test(x)
+    trend, h, p, z, Tau, s, var_s, slope = correlated_multivariate_test(x)
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def partial_mk_test(x, alpha = 0.05):
+def partial_test(x, alpha = 0.05):
     """
     This function check Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
