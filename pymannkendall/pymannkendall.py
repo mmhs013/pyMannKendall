@@ -1,0 +1,674 @@
+"""
+Created on 05 March 2018
+Update on 19 Feburay 2019
+@author: Md. Manjurul Hussain Shourov
+version: 0.1 (alpha)
+Approach: Vectorisation
+
+Remark: Full 11 mk test and 2 sens slope funtion is complete. Need to optimaze and speed up this code,
+"""
+
+from __future__ import division
+import numpy as np
+from scipy.stats import norm, rankdata
+
+from statsmodels.tsa.stattools import acf
+from collections import namedtuple
+
+
+# Supporting Functions
+def __preprocessing(x):
+    x = np.asarray(x)
+    dim = x.ndim
+    
+    if dim == 1:
+        c = 1
+        
+    elif dim == 2:
+        (n, c) = x.shape
+        
+        if c == 1:
+            dim = 1
+            x = x.flatten()
+         
+    else:
+        print('Please check your dataset.')
+        
+    return x, c
+
+
+def __missing_values_analysis(x, method = 'skip'):
+    if method.lower() == 'skip':
+        if x.ndim == 1:
+            x = x[~np.isnan(x)]
+            
+        else:
+            x = x[~np.isnan(x).any(axis=1)]
+    
+    n = len(x)
+    
+    return x, n
+
+
+# vectorization approach to calculate mk score, S
+def __mk_score(x, n):
+    s = 0
+    
+    # Old approach to calculate S
+    # for k in range(n-1):
+    #     for j in range(k+1, n):
+    #         s += np.sign(x[j] - x[k])
+    
+    # this is a demo variable, which use to increase speed
+    demo = np.ones(n) 
+    for k in range(n-1):
+        s += sum(demo[k+1:n][x[k+1:n] > x[k]]) - sum(demo[k+1:n][x[k+1:n] < x[k]])
+        
+    return s
+
+# original mann-kendal's variance S calculation
+def __variance_s(x, n):
+    # calculate the unique data
+    unique_x = np.unique(x)
+    g = len(unique_x)
+
+    # calculate the var(s)
+    if n == g:            # there is no tie
+        var_s = (n*(n-1)*(2*n+5))/18
+        
+    else:                 # there are some ties in data
+        tp = np.zeros(unique_x.shape)
+        demo = np.ones(n)
+        
+        for i in range(g):
+            tp[i] = sum(demo[x == unique_x[i]])
+            
+        var_s = (n*(n-1)*(2*n+5) - np.sum(tp*(tp-1)*(2*tp+5)))/18
+        
+    return var_s
+
+
+# standardized test statistic Z
+def __z_score(s, var_s):
+    if s > 0:
+        z = (s - 1)/np.sqrt(var_s)
+    elif s == 0:
+        z = 0
+    elif s < 0:
+        z = (s + 1)/np.sqrt(var_s)
+    
+    return z
+
+
+# calculate the p_value
+def __p_value(z, alpha):
+    # two tail test
+    p = 2*(1-norm.cdf(abs(z)))  
+    h = abs(z) > norm.ppf(1-alpha/2)
+
+    if (z < 0) and h:
+        trend = 'decreasing'
+    elif (z > 0) and h:
+        trend = 'increasing'
+    else:
+        trend = 'no trend'
+    
+    return p, h, trend
+
+
+def __R(x):
+    n = len(x)
+    R = np.ones(n)
+    
+    for j in range(n):
+        s = 0
+        
+        for i in range(n):
+            s = s + np.sign(x[j] - x[i])
+        
+        R[j] = (n + 1 + s)/2
+    
+    return R
+
+
+def __K(x,z):
+    n = len(x)
+    K = 0
+    
+    for i in range(n-1):
+        for j in range(i,n):
+            K = K + np.sign((x[j] - x[i]) * (z[j] - z[i]))
+    
+    return K
+
+
+def __sens_estimator(x):
+    n = len(x)
+    
+    d = np.ones(int(0.5 * n * (n-1)))
+    idx = 0
+    
+    for i in range(n-1):
+        for j in range(i+1,n):
+            d[idx] = (x[j] - x[i]) / (j - i)
+            idx = idx +1
+    
+    return d
+
+
+def sens_slope(x):
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    return np.median(__sens_estimator(x))
+
+
+def seasonal_sens_slope(x, period=12):
+    x, c = __preprocessing(x)
+    n = len(x)
+    
+    if x.ndim == 1:
+        if np.mod(n,period) != 0:
+            x = np.pad(x,(0,period - np.mod(n,period)), 'constant', constant_values=(np.nan,))
+
+        x = x.reshape(int(len(x)/period),period)
+    
+    x, n = __missing_values_analysis(x, method = 'skip')
+    d = np.array([])
+    
+    for i in range(period):
+        d = np.append(d,__sens_estimator(x[:,i]))
+        
+    return np.median(d)
+
+def mk_test(x, alpha = 0.05):
+    """
+    This function check Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert
+    1987).
+    Input:
+        x:   a one dimentional vector (list, numpy array or pandas series) data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s: Mann-Kendal's score
+        var_s: Variance S
+        slope: sen's slope
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk_test(x,0.05)
+    """
+    res = namedtuple('Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    s = __mk_score(x, n)
+    var_s = __variance_s(x, n)
+    Tau = s/(.5*n*(n-1))
+    
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+    slope = sens_slope(x)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+def mmkh_test(x, alpha = 0.05, lag=None):
+    """
+    This function check Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
+    Input:
+        x:   a vector of data
+        alpha: significance level (0.05 default)
+        lag: No. of First Significant Lags (default None, You can use 3 for considering first 3 lags, which also proposed by Hamed and Rao(1998))
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = mmkh_test(x,0.05)
+    """
+    res = namedtuple('Modified_MK_Test_Hamed_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    s = __mk_score(x, n)
+    var_s = __variance_s(x, n)
+    Tau = s/(.5*n*(n-1))
+
+    # Hamed and Rao (1998) variance correction
+    if lag is None:
+        lag = n
+    else:
+        lag = lag + 1
+        
+    # detrending
+    # x_detrend = x - np.multiply(range(1,n+1), np.median(x))
+    slope = sens_slope(x)
+    x_detrend = x - np.multiply(range(1,n+1), slope)
+    I = rankdata(x_detrend)
+    
+    # account for autocorrelation
+    acf1 = acf(I, nlags=lag-1)
+    interval = norm.ppf(1 - alpha / 2) / np.sqrt(n)
+    upper_bound = 0 + interval
+    lower_bound = 0 - interval
+
+    sni = 0
+    for i in range(1,lag):
+        if (acf1[i] <= upper_bound and acf1[i] >= lower_bound):
+            sni = sni
+        else:
+            sni += (n-i) * (n-i-1) * (n-i-2) * acf1[i]
+            
+    n_ns = 1 + (2 / (n * (n-1) * (n-2))) * sni
+    var_s = var_s * n_ns
+    
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+        
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+def mmky_test(x, alpha = 0.05, lag=None):
+    """
+    Input: This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2004).
+        x:   a vector of data
+        alpha: significance level (0.05 default)
+        lag: No. of First Significant Lags (default None, You can use 1 for considering first 1 lags, which also proposed by Yue and Wang (2004))
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = mmky_test(x,0.05)
+    """
+    res = namedtuple('Modified_MK_Test_Yue_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    s = __mk_score(x, n)
+    var_s = __variance_s(x, n)
+    Tau = s/(.5*n*(n-1))
+    
+    # Yue and Wang (2004) variance correction
+    if lag is None:
+        lag = n
+    else:
+        lag = lag + 1
+
+    # detrending
+    slope = sens_slope(x)
+    x_detrend = x - np.multiply(range(1,n+1), slope)
+    
+    # account for autocorrelation
+    acf_1 = acf(x_detrend, nlags=lag-1)
+
+    sni = 0
+    for i in range(1,lag):
+        sni += (1 - i/n) * acf_1[i]
+    
+    n_ns = 1 + 2 * sni
+    var_s = var_s * n_ns
+
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+def mmkpw_test(x, alpha = 0.05):
+    """
+    This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
+    Input:
+        x:   a vector of data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        s:
+        sar_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = mmkpw_test(x,0.05)
+    """
+    res = namedtuple('Modified_MK_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    # PreWhitening
+    acf_1 = acf(x, nlags=1)[1]
+    a = range(0, n-1)
+    b = range(1, n)
+    x = x[b] - x[a]*acf_1
+    n = len(x)
+    
+    s = __mk_score(x, n)
+    var_s = __variance_s(x, n)
+    Tau = s/(.5*n*(n-1))
+    
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+    slope = sens_slope(x)
+    
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+def mmktfpw_test(x, alpha = 0.05):
+    """
+    This function check Modified Mann-Kendall (MK) test using trend-free Pre-Whitening method proposed by Yue and Wang (2002).
+    Input:
+        x:   a vector of data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        s:
+        sar_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = mmktfpw_test(x,0.05)
+    """
+    res = namedtuple('Modified_MK_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    # detrending
+    slope = sens_slope(x)
+    x_detrend = x - np.multiply(range(1,n+1), slope)
+    
+    # PreWhitening
+    acf_1 = acf(x_detrend, nlags=1)[1]
+    a = range(0, n-1)
+    b = range(1, n)
+    x = x_detrend[b] - x_detrend[a]*acf_1
+	
+    n = len(x)
+    x = x + np.multiply(range(1,n+1), slope)
+    
+    s = __mk_score(x, n)
+    var_s = __variance_s(x, n)
+    Tau = s/(.5*n*(n-1))
+    
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+    slope = sens_slope(x)
+    
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def multivariate_mk_test(x, alpha = 0.05):
+    """
+    This function check Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test
+    Input:
+        x:   a matrix of data
+        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = multivariate_mk_test(x,0.05)
+    """
+    res = namedtuple('Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    s = 0
+    var_s = 0
+    denom = 0
+    d = np.array([])
+    
+    x, c = __preprocessing(x)
+#     x, n = __missing_values_analysis(x, method = 'skip')  # It make same column size
+
+    for i in range(c):
+        if c == 1:
+            x_new, n = __missing_values_analysis(x, method = 'skip')  # It make deferent column size
+        else:
+            x_new, n = __missing_values_analysis(x[:,i], method = 'skip')  # It make deferent column size
+#         x_new = x[:,i]
+        s = s + __mk_score(x_new, n)
+        var_s = var_s + __variance_s(x_new, n)
+        denom = denom + (.5*n*(n-1))
+              
+    Tau = s/denom
+    
+    z = __z_score(s, var_s)
+    p, h, trend = __p_value(z, alpha)
+
+    slope = seasonal_sens_slope(x, period = c)
+    
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def seasonal_mk_test(x, period = 12, alpha = 0.05):
+    """
+    This function check Seasonal Mann-Kendall (MK) test (Hirsch, R. M., Slack, J. R. 1984).
+    Input:
+        x:   a vector of data
+        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = seasonal_mk_test(x,0.05)
+    """
+    res = namedtuple('Seasonal_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+    n = len(x)
+    
+    if x.ndim == 1:
+        if np.mod(n,period) != 0:
+            x = np.pad(x,(0,period - np.mod(n,period)), 'constant', constant_values=(np.nan,))
+
+        x = x.reshape(int(len(x)/period),period)
+    
+    trend, h, p, z, Tau, s, var_s, slope = multivariate_mk_test(x, alpha = alpha)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def regional_mk_test(x, alpha = 0.05):
+    """
+    This function check Regional Mann-Kendall (MK) test (Helsel 2006).
+    Input:
+        x:   a matrix of data
+        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = regional_mk_test(x,0.05)
+    """
+    res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    
+    trend, h, p, z, Tau, s, var_s, slope = multivariate_mk_test(x)
+    
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def correlated_multivariate_mk_test(x, alpha = 0.05):
+    """
+    This function check Correlated Multivariate Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
+    Input:
+        x:   a matrix of data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = correlated_multivariate_mk_test(x,0.05)
+    """
+    res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+    x, n = __missing_values_analysis(x, method = 'skip')
+    
+    s = 0
+    denom = 0
+    
+    for i in range(c):
+        s = s + __mk_score(x[:,i], n)
+        denom = denom + (.5*n*(n-1))
+ 
+    Tau = s/denom
+
+    Gamma = np.ones([c,c])
+
+    for i in range(1,c):
+        for j in range(i):
+            k = __K(x[:,i], x[:,j])
+            ri = __R(x[:,i])
+            rj = __R(x[:,j])
+            Gamma[i,j] = (k + 4*sum(ri * rj) - n*(n+1)**2)/3
+            Gamma[j,i] = Gamma[i,j]
+
+    for i in range(c):
+        k = __K(x[:,i], x[:,i])
+        ri = __R(x[:,i])
+        rj = __R(x[:,i])
+        Gamma[i,i] = (k + 4*sum(ri * rj) - n*(n+1)**2)/3
+    
+    
+    var_s = Gamma.sum()
+    
+    z = s / np.sqrt(var_s)
+
+    p, h, trend = __p_value(z, alpha)
+    slope = seasonal_sens_slope(x, period=c)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def correlated_seasonal_mk_test(x, period = 12 ,alpha = 0.05):
+    """
+    This function check Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
+    Input:
+        x:   a matrix of data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = correlated_seasonal_mk_test(x,0.05)
+    """
+    res = namedtuple('Correlated_Seasonal_mk_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    x, c = __preprocessing(x)
+
+    n = len(x)
+    
+    if x.ndim == 1:
+        if np.mod(n,period) != 0:
+            x = np.pad(x,(0,period - np.mod(n,period)), 'constant', constant_values=(np.nan,))
+
+        x = x.reshape(int(len(x)/period),period)
+    
+    trend, h, p, z, Tau, s, var_s, slope = correlated_multivariate_mk_test(x)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
+
+
+def partial_mk_test(x, alpha = 0.05):
+    """
+    This function check Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
+    Input:
+        x:   a matrix of data
+        alpha: significance level (0.05 default)
+    Output:
+        trend: tells the trend (increasing, decreasing or no trend)
+        h: True (if trend is present) or False (if trend is absence)
+        p: p value of the significance test
+        z: normalized test statistics
+        Tau: Kendall Tau
+        s:
+        var_s: Variance S
+    Examples
+    --------
+      >>> x = np.random.rand(1000)
+      >>> trend,h,p,z,tau,s,var_s,slope = partial_mk_test(x,0.05)
+    """
+    res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    
+    x_old, c = __preprocessing(x)
+    x_old, n = __missing_values_analysis(x_old, method = 'skip')
+    
+    if c != 2:
+        print('Partial Mann Kendall test required two parameters. Here parameter no ' + c + ' is not equal to 2.')
+    
+    x = x_old[:,0]
+    y = x_old[:,1]
+    
+    x_score = __mk_score(x, n)
+    y_score = __mk_score(y, n)
+    
+    k = __K(x, y)
+    rx = __R(x)
+    ry = __R(y)
+    
+    sigma = (k + 4*sum(rx * ry) - n*(n+1)**2)/3
+    rho = sigma / (n*(n-1)*(2*n+5)/18)
+    
+    s = x_score - rho * y_score
+    var_s = (1 - rho**2) * (n*(n-1)*(2*n+5))/18
+    
+    Tau = x_score/(.5*n*(n-1))
+    
+    z = s / np.sqrt(var_s)
+
+    p, h, trend = __p_value(z, alpha)
+    slope = sens_slope(x)
+
+    return res(trend, h, p, z, Tau, s, var_s, slope)
