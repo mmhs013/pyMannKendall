@@ -144,15 +144,12 @@ def __K(x,z):
 
 def __sens_estimator(x):
     n = len(x)
-    
-    d = np.ones(int(0.5 * n * (n-1)))
-    idx = 0
+    d = []
     
     for i in range(n-1):
-        for j in range(i+1,n):
-            d[idx] = (x[j] - x[i]) / (j - i)
-            idx = idx +1
-    
+        j = np.arange(i+1,n)
+        d.extend((x[j] - x[i]) / (j - i))
+
     return d
 
 
