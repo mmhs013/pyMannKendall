@@ -53,16 +53,10 @@ def __missing_values_analysis(x, method = 'skip'):
 # vectorization approach to calculate mk score, S
 def __mk_score(x, n):
     s = 0
-    
-    # Old approach to calculate S
-    # for k in range(n-1):
-    #     for j in range(k+1, n):
-    #         s += np.sign(x[j] - x[k])
-    
-    # this is a demo variable, which use to increase speed
+
     demo = np.ones(n) 
     for k in range(n-1):
-        s += sum(demo[k+1:n][x[k+1:n] > x[k]]) - sum(demo[k+1:n][x[k+1:n] < x[k]])
+        s = s + np.sum(demo[k+1:n][x[k+1:n] > x[k]]) - np.sum(demo[k+1:n][x[k+1:n] < x[k]])
         
     return s
 
@@ -81,7 +75,7 @@ def __variance_s(x, n):
         demo = np.ones(n)
         
         for i in range(g):
-            tp[i] = sum(demo[x == unique_x[i]])
+            tp[i] = np.sum(demo[x == unique_x[i]])
             
         var_s = (n*(n-1)*(2*n+5) - np.sum(tp*(tp-1)*(2*tp+5)))/18
         
@@ -118,17 +112,15 @@ def __p_value(z, alpha):
 
 def __R(x):
     n = len(x)
-    R = np.ones(n)
+    R = []
     
     for j in range(n):
-        s = 0
-        
-        for i in range(n):
-            s = s + np.sign(x[j] - x[i])
-        
-        R[j] = (n + 1 + s)/2
+        i = np.arange(n)
+        s = np.sum(np.sign(x[j] - x[i]))
+        R.
+        ([(n + 1 + s)/2])
     
-    return R
+    return np.asarray(R)
 
 
 def __K(x,z):
@@ -136,8 +128,8 @@ def __K(x,z):
     K = 0
     
     for i in range(n-1):
-        for j in range(i,n):
-            K = K + np.sign((x[j] - x[i]) * (z[j] - z[i]))
+        j = np.arange(i,n)
+        K = K + np.sum(np.sign((x[j] - x[i]) * (z[j] - z[i])))
     
     return K
 
@@ -150,7 +142,7 @@ def __sens_estimator(x):
         j = np.arange(i+1,n)
         d.extend((x[j] - x[i]) / (j - i))
 
-    return d
+    return np.asarray(d)
 
 
 def sens_slope(x):
@@ -171,12 +163,12 @@ def seasonal_sens_slope(x, period=12):
         x = x.reshape(int(len(x)/period),period)
     
     x, n = __missing_values_analysis(x, method = 'skip')
-    d = np.array([])
+    d = []
     
     for i in range(period):
-        d = np.append(d,__sens_estimator(x[:,i]))
+        d.extend(__sens_estimator(x[:,i]))
         
-    return np.median(d)
+    return np.median(np.asarray(d))
 
 def original_test(x, alpha = 0.05):
     """
@@ -250,21 +242,21 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
     # detrending
     # x_detrend = x - np.multiply(range(1,n+1), np.median(x))
     slope = sens_slope(x)
-    x_detrend = x - np.multiply(range(1,n+1), slope)
+    x_detrend = x - np.arange(1,n+1) * slope
     I = rankdata(x_detrend)
     
     # account for autocorrelation
-    acf1 = acf(I, nlags=lag-1)
+    acf_1 = acf(I, nlags=lag-1)
     interval = norm.ppf(1 - alpha / 2) / np.sqrt(n)
     upper_bound = 0 + interval
     lower_bound = 0 - interval
 
     sni = 0
     for i in range(1,lag):
-        if (acf1[i] <= upper_bound and acf1[i] >= lower_bound):
+        if (acf_1[i] <= upper_bound and acf_1[i] >= lower_bound):
             sni = sni
         else:
-            sni += (n-i) * (n-i-1) * (n-i-2) * acf1[i]
+            sni += (n-i) * (n-i-1) * (n-i-2) * acf_1[i]
             
     n_ns = 1 + (2 / (n * (n-1) * (n-2))) * sni
     var_s = var_s * n_ns
@@ -309,14 +301,12 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
 
     # detrending
     slope = sens_slope(x)
-    x_detrend = x - np.multiply(range(1,n+1), slope)
+    x_detrend = x - np.arange(1,n+1) * slope
     
     # account for autocorrelation
     acf_1 = acf(x_detrend, nlags=lag-1)
-
-    sni = 0
-    for i in range(1,lag):
-        sni += (1 - i/n) * acf_1[i]
+    idx = np.arange(1,lag)
+    sni = np.sum((1 - i/n) * acf_1[idx])
     
     n_ns = 1 + 2 * sni
     var_s = var_s * n_ns
@@ -391,16 +381,16 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     
     # detrending
     slope = sens_slope(x)
-    x_detrend = x - np.multiply(range(1,n+1), slope)
+    x_detrend = x - np.arange(1,n+1) * slope
     
     # PreWhitening
     acf_1 = acf(x_detrend, nlags=1)[1]
     a = range(0, n-1)
     b = range(1, n)
     x = x_detrend[b] - x_detrend[a]*acf_1
-	
+
     n = len(x)
-    x = x + np.multiply(range(1,n+1), slope)
+    x = x + np.arange(1,n+1) * slope
     
     s = __mk_score(x, n)
     var_s = __variance_s(x, n)
@@ -437,7 +427,6 @@ def multivariate_test(x, alpha = 0.05):
     s = 0
     var_s = 0
     denom = 0
-    d = np.array([])
     
     x, c = __preprocessing(x)
 #     x, n = __missing_values_analysis(x, method = 'skip')  # It make same column size
@@ -447,7 +436,7 @@ def multivariate_test(x, alpha = 0.05):
             x_new, n = __missing_values_analysis(x, method = 'skip')  # It make deferent column size
         else:
             x_new, n = __missing_values_analysis(x[:,i], method = 'skip')  # It make deferent column size
-#         x_new = x[:,i]
+
         s = s + __mk_score(x_new, n)
         var_s = var_s + __variance_s(x_new, n)
         denom = denom + (.5*n*(n-1))
@@ -563,17 +552,17 @@ def correlated_multivariate_test(x, alpha = 0.05):
             k = __K(x[:,i], x[:,j])
             ri = __R(x[:,i])
             rj = __R(x[:,j])
-            Gamma[i,j] = (k + 4*sum(ri * rj) - n*(n+1)**2)/3
+            Gamma[i,j] = (k + 4 * np.sum(ri * rj) - n*(n+1)**2)/3
             Gamma[j,i] = Gamma[i,j]
 
     for i in range(c):
         k = __K(x[:,i], x[:,i])
         ri = __R(x[:,i])
         rj = __R(x[:,i])
-        Gamma[i,i] = (k + 4*sum(ri * rj) - n*(n+1)**2)/3
+        Gamma[i,i] = (k + 4 * np.sum(ri * rj) - n*(n+1)**2)/3
     
     
-    var_s = Gamma.sum()
+    var_s = np.sum(Gamma)
     
     z = s / np.sqrt(var_s)
 
@@ -655,7 +644,7 @@ def partial_test(x, alpha = 0.05):
     rx = __R(x)
     ry = __R(y)
     
-    sigma = (k + 4*sum(rx * ry) - n*(n+1)**2)/3
+    sigma = (k + 4 * np.sum(rx * ry) - n*(n+1)**2)/3
     rho = sigma / (n*(n-1)*(2*n+5)/18)
     
     s = x_score - rho * y_score
