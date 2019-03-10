@@ -117,8 +117,7 @@ def __R(x):
     for j in range(n):
         i = np.arange(n)
         s = np.sum(np.sign(x[j] - x[i]))
-        R.
-        ([(n + 1 + s)/2])
+        R.extend([(n + 1 + s)/2])
     
     return np.asarray(R)
 
