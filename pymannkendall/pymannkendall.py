@@ -305,7 +305,7 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
     # account for autocorrelation
     acf_1 = acf(x_detrend, nlags=lag-1)
     idx = np.arange(1,lag)
-    sni = np.sum((1 - i/n) * acf_1[idx])
+    sni = np.sum((1 - idx/n) * acf_1[idx])
     
     n_ns = 1 + 2 * sni
     var_s = var_s * n_ns
