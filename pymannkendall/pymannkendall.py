@@ -11,8 +11,6 @@ Remark: Full 11 mk test and 2 sens slope funtion is complete. Need to optimaze a
 from __future__ import division
 import numpy as np
 from scipy.stats import norm, rankdata
-
-from statsmodels.tsa.stattools import acf
 from collections import namedtuple
 
 
@@ -48,6 +46,16 @@ def __missing_values_analysis(x, method = 'skip'):
     n = len(x)
     
     return x, n
+
+
+def __acf(x, nlags):
+    y = x - x.mean()
+    n = len(x)
+    d = n * np.ones(2 * n - 1)
+    
+    acov = (np.correlate(y, y, 'full') / d)[n - 1:]
+    
+    return acov[:nlags+1]/acov[0]
 
 
 # vectorization approach to calculate mk score, S
@@ -134,14 +142,16 @@ def __K(x,z):
 
 
 def __sens_estimator(x):
+    idx = 0
     n = len(x)
-    d = []
-    
+    d = np.ones(int(n*(n-1)/2))
+
     for i in range(n-1):
         j = np.arange(i+1,n)
-        d.extend((x[j] - x[i]) / (j - i))
-
-    return np.asarray(d)
+        d[idx : idx + len(j)] = (x[j] - x[i]) / (j - i)
+        idx = idx + len(j)
+        
+    return d
 
 
 def sens_slope(x):
@@ -245,7 +255,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
     I = rankdata(x_detrend)
     
     # account for autocorrelation
-    acf_1 = acf(I, nlags=lag-1)
+    acf_1 = __acf(I, nlags=lag-1)
     interval = norm.ppf(1 - alpha / 2) / np.sqrt(n)
     upper_bound = 0 + interval
     lower_bound = 0 - interval
@@ -303,7 +313,7 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
     x_detrend = x - np.arange(1,n+1) * slope
     
     # account for autocorrelation
-    acf_1 = acf(x_detrend, nlags=lag-1)
+    acf_1 = __acf(x_detrend, nlags=lag-1)
     idx = np.arange(1,lag)
     sni = np.sum((1 - idx/n) * acf_1[idx])
     
@@ -339,7 +349,7 @@ def pre_whitening_modification_test(x, alpha = 0.05):
     x, n = __missing_values_analysis(x, method = 'skip')
     
     # PreWhitening
-    acf_1 = acf(x, nlags=1)[1]
+    acf_1 = __acf(x, nlags=1)[1]
     a = range(0, n-1)
     b = range(1, n)
     x = x[b] - x[a]*acf_1
@@ -383,7 +393,7 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     x_detrend = x - np.arange(1,n+1) * slope
     
     # PreWhitening
-    acf_1 = acf(x_detrend, nlags=1)[1]
+    acf_1 = __acf(x_detrend, nlags=1)[1]
     a = range(0, n-1)
     b = range(1, n)
     x = x_detrend[b] - x_detrend[a]*acf_1
@@ -631,7 +641,7 @@ def partial_test(x, alpha = 0.05):
     x_old, n = __missing_values_analysis(x_old, method = 'skip')
     
     if c != 2:
-        print('Partial Mann Kendall test required two parameters. Here parameter no ' + c + ' is not equal to 2.')
+        raise ValueError('Partial Mann Kendall test required two parameters/columns. Here column no ' + str(c) + ' is not equal to 2.')
     
     x = x_old[:,0]
     y = x_old[:,1]
