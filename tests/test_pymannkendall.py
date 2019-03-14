@@ -55,7 +55,7 @@ def test_yue_wang_modification_test(rainfalldata):
     assert result.trend == 'decreasing'
     assert result.h == True
     assert round(result.p, 13) == 0.0083446565499
-    assert result.z == -2.6377968071103193
+    assert round(result.z,12) == -2.637796807110
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     assert result.var_s == 550988.7079774942
