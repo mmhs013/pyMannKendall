@@ -54,11 +54,11 @@ def test_yue_wang_modification_test(rainfalldata):
     
     assert result.trend == 'decreasing'
     assert result.h == True
-    assert round(result.p, 13) == 0.0083446565499
-    assert round(result.z,12) == -2.637796807110
+    assert round(result.p, 13) == round(0.008344656549921448, 13)
+    assert round(result.z, 12) == round(-2.6377968071103193, 12)
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
-    assert round(result.var_s,6) == 550988.707977
+    assert round(result.var_s, 6) == round(550988.7079774942, 6)
     assert result.slope == -0.0064516129032258064
     
 def test_yue_wang_modification_test_lag1(rainfalldata):
@@ -83,7 +83,7 @@ def test_pre_whitening_modification_test(rainfalldata):
     assert result.Tau == -0.003545066045066045
     assert result.s == -219.0
     assert result.var_s == 4865719.0
-    assert result.slope == -0.0005373555273865899
+    assert round(result.slope, 16) == round(-0.0005373555273865899, 16)
     
 def test_trend_free_pre_whitening_modification_test(rainfalldata):
     result = mk.trend_free_pre_whitening_modification_test(rainfalldata.iloc[:,2])
