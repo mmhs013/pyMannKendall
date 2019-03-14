@@ -3,5 +3,5 @@ cache: pip
 python:
    - "3.6"
    - "3.7"
-install: "pip install -r requirements.txt"
-script: pytest
+install: pip install -r requirements.txt
+script: pytest -v --disable-warning
