@@ -1,2 +1,9 @@
 # pyMannKendall
-Create a non-parametric Mann Kendall trend analysis package for python.
+pyMannkendal is a pure Python implementation of non-parametric Mann Kendall trend analyis.
+
+# Installation:
+You can install pyMannKendall using pip.
+
+```python
+pip install pymannkendall
+```
