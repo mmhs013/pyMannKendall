@@ -58,7 +58,7 @@ def test_yue_wang_modification_test(rainfalldata):
     assert round(result.z,12) == -2.637796807110
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
-    assert result.var_s == 550988.7079774942
+    assert round(result.var_s,6) == 550988.707977
     assert result.slope == -0.0064516129032258064
     
 def test_yue_wang_modification_test_lag1(rainfalldata):
