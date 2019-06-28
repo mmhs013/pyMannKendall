@@ -1,7 +1,34 @@
-# pyMannKendall
-[![Build Status](https://travis-ci.org/mmhs013/pyMannKendall.svg?branch=master)](https://travis-ci.org/mmhs013/pyMannKendall)
+---
+title: 'pyMannKendall: a python package for non parametric mann kendall family of trend tests.'
+tags:
+  - mann kendall
+  - modified mann kendall
+  - sen's slope
+authors:
+ - name: Md. Manjurul Hussain
+   orcid: 0000-0002-5361-0633
+   affiliation: 1
+ - name: Ishtiak Mahmud
+   orcid: 
+   affiliation: 2   
+affiliations:
+ - name: Institute of Water and Flood Management, Bangladesh University of Engineering and Technology, Bangladesh
+   index: 1
+ - name: 
+   index: 2
+date: 28 June 2019
+bibliography: paper.bib
+---
 
-pyMannkendal is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen’s slope estimator function. Brief description of functions are below:
+# Summary
+
+Trend analysis is one of the important measurements in studying time series data. Both parametric and non-parametric tests are commonly used in trend analysis. Parametric test require data to be independent and normally distributed. On the other hand, non-parametric trend tests require only that the data be independent and can tolerate outliers in the data [@hamed1998modified]. However, Parametric tests are more powerful than nonparametric ones.
+
+The Mann–Kendall trend test [@mann1945nonparametric; @kendall1975rank] is one of the widely used non-parametric tests to detect significant trends in time series. However, the original Mann-Kendall test didn't consider serial correlation or seasonality effects [@bari2016analysis; @hirsch1982techniques]. But, in many real situations, the observed data are autocorrelated and this autocorrelation will result in misinterpretation of trend tests results [@hamed1998modified, @cox1955some]. Contrariwise, water quality, hydrologic, as well as climatic and other natural time series also have seasonality. To overcome those limitations of original Mann-Kendall test, various modified Mann-Kendall test have developed.
+
+Again, Python is one of the widely used tools for data analysis. A large number of data analysis and research tools are also developed using python. But, till now, there is no Mann-Kendall trend relation python package available. ``pyMannKendall`` package is going to fill up this gap.
+
+``pyMannKendall`` is written in pure python and use vectorization approach to increase its performance. Currently, this package has 11 Mann-Kendall Tests and 2 sen’s slope estimator function. Brief description of functions are below:
 
 1.	**Original Mann Kendall test (*original_test*):** Original Mann Kendall test [@mann1945nonparametric; @kendall1975rank] is a nonparametric test, which does not consider serial correlation or seasonal effects.
 
@@ -29,76 +56,4 @@ pyMannkendal is a pure Python implementation of non-parametric Mann Kendall tren
 
 13.	**Seasonal Sen’s Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) [@hipel1994time] to estimate the magnitude of the monotonic trend, when data has seasonal effects.
 
-# Function details:
-
-All Mann-kendall test functions has almost similer input parameter. Those are:
-
-- **x**:   a vector of data
-- **alpha**: significance level (0.05 default)
-- **lag**: No. of First Significant Lags (Only available in hamed_rao_modification_test and yue_wang_modification_test)
-- **period**: seasonal cycle. For monthly data it is 12, weekly data it is 52 (Only available in seasonal tests)
-
-And all Mann-kendall tests return a named tuple which contained:
-
-- **trend**: tells the trend (increasing, decreasing or no trend)
-- **h**: True (if trend is present) or False (if trend is absence)
-- **p**: p value of the significance test
-- **z**: normalized test statistics
-- **Tau**: Kendall Tau
-- **s**: Mann-Kendal's score
-- **var_s**: Variance S
-- **slope**: sen's slope
-
-Sen’s slope function required data vector. seasonal sen’s slope also has optional input period, which by default value is 12. Both sen’s slope function return only slope value.
-
-# Installation
-
-You can install pyMannKendall using pip.
-
-```python
-pip install pymannkendall
-```
-
-Or you can clone the repo and install it:
-
-```bash
-git clone https://github.com/mmhs013/pymannkendall
-cd pymannkendall
-python setup.py install
-```
-
-# Usage
-
-Here an example of `pyMannKendall` usage:
-```python
-import numpy as np
-import pymannkendall as mk
-
-# Data generation for analysis
-data = np.random.rand(360,1)
-
-result = mk.original_test(data)
-print(result)
-```
-Output are like this:
-```python
-Mann_Kendall_Test(trend='no trend', h=False, p=0.9535148145990886, z=0.05829353811789905, Tau=0.002073661405137728, s=134.0, var_s=5205500.0, slope=8.408683160625719e-06)
-```
-Whereas, the output is a named tuple, so you can call by name for specific result:
-```python
-print(result.slope)
-```
-or, you can directly unpacked results like this:
-```python
-trend, h, p, z, Tau, s, var_s, slope = mk.original_test(data)
-```
-## Contributions
-
-`pyMannKendall` is a community project and welcomes contributions. Additional information can be found in the [contribution guidelines](https://github.com/mmhs013/pyMannKendall/blob/master/CONTRIBUTING.md)
-
-
-## Code of Conduct
-
-`pyMannKendall` wishes to maintain a positive community. Additional details can be found in the [Code of Conduct](https://github.com/mmhs013/pyMannKendall/blob/master/CODE_OF_CONDUCT.md)
-
-
+# References
