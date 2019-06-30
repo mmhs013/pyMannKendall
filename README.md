@@ -6,7 +6,6 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 
-
 `pyMannkendal` is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen's slope estimator function. Brief description of functions are below:
 
 1.	**Original Mann Kendall test (*original_test*):** Original Mann Kendall test is a nonparametric test, which does not consider serial correlation or seasonal effects.
@@ -59,7 +58,7 @@ sen's slope function required data vector. seasonal sen's slope also has optiona
 
 # Installation
 
-You can install pyMannKendall using pip.
+You can install `pyMannKendall` using pip.
 
 ```python
 pip install pymannkendall
