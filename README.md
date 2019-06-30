@@ -31,7 +31,7 @@ pyMannkendal is a pure Python implementation of non-parametric Mann Kendall tren
 
 # Function details:
 
-All Mann-kendall test functions has almost similer input parameter. Those are:
+All Mann-kendall test functions has almost similer input parameters. Those are:
 
 - **x**:   a vector of data
 - **alpha**: significance level (0.05 default)
@@ -88,7 +88,7 @@ Whereas, the output is a named tuple, so you can call by name for specific resul
 ```python
 print(result.slope)
 ```
-or, you can directly unpacked results like this:
+or, you can directly unpack your results like this:
 ```python
 trend, h, p, z, Tau, s, var_s, slope = mk.original_test(data)
 ```
