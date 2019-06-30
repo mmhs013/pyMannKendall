@@ -17,8 +17,7 @@ setup(
     version = __version__,
     author = __author__,
     author_email = __email__,
-    description = ("Tools to recover expectionally precise rotation curves from "
-                 "spatially resolved spectra."),
+    description = ("A python package for non parametric mann kendall family of trend tests."),
     long_description = long_description,
     long_description_content_type = "text/markdown",
     url = "https://github.com/mmhs013/pymannkendall",

@@ -1,8 +1,8 @@
 """
 Created on 05 March 2018
-Update on 19 Feburay 2019
+Update on 30 June 2019
 @author: Md. Manjurul Hussain Shourov
-version: 0.1 (alpha)
+version: 1.0
 Approach: Vectorisation
 
 Remark: Full 11 mk test and 2 sens slope funtion is complete. Need to optimaze and speed up this code,
@@ -15,6 +15,7 @@ from collections import namedtuple
 
 
 # Supporting Functions
+# Data Preprocessing
 def __preprocessing(x):
     x = np.asarray(x)
     dim = x.ndim
@@ -34,7 +35,8 @@ def __preprocessing(x):
         
     return x, c
 
-
+	
+# Missing Values Analysis
 def __missing_values_analysis(x, method = 'skip'):
     if method.lower() == 'skip':
         if x.ndim == 1:
@@ -47,7 +49,8 @@ def __missing_values_analysis(x, method = 'skip'):
     
     return x, n
 
-
+	
+# ACF Calculation
 def __acf(x, nlags):
     y = x - x.mean()
     n = len(x)
@@ -68,6 +71,7 @@ def __mk_score(x, n):
         
     return s
 
+	
 # original mann-kendal's variance S calculation
 def __variance_s(x, n):
     # calculate the unique data
@@ -140,7 +144,8 @@ def __K(x,z):
     
     return K
 
-
+	
+# Original Sens Estimator
 def __sens_estimator(x):
     idx = 0
     n = len(x)
@@ -155,6 +160,17 @@ def __sens_estimator(x):
 
 
 def sens_slope(x):
+    """
+    This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend.
+    Input:
+        x:   a one dimentional vector (list, numpy array or pandas series) data
+    Output:
+        slope: sen's slope
+    Examples
+    --------
+      >>> x = np.random.rand(120)
+      >>> slope = sens_slope(x)
+    """
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -162,6 +178,18 @@ def sens_slope(x):
 
 
 def seasonal_sens_slope(x, period=12):
+    """
+    This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
+    Input:
+        x:   a one dimentional vector (list, numpy array or pandas series) data
+		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+    Output:
+        slope: sen's slope
+    Examples
+    --------
+      >>> x = np.random.rand(120)
+      >>> slope = seasonal_sens_slope(x, 12)
+    """
     x, c = __preprocessing(x)
     n = len(x)
     
@@ -179,12 +207,12 @@ def seasonal_sens_slope(x, period=12):
         
     return np.median(np.asarray(d))
 
+	
 def original_test(x, alpha = 0.05):
     """
-    This function check Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert
-    1987).
+    This function check Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert 1987).
     Input:
-        x:   a one dimentional vector (list, numpy array or pandas series) data
+        x: a one dimentional vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
@@ -197,8 +225,9 @@ def original_test(x, alpha = 0.05):
         slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.original_test(x,0.05)
     """
     res = namedtuple('Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
@@ -218,7 +247,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
     """
     This function check Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
     Input:
-        x:   a vector of data
+        x: a vector of data
         alpha: significance level (0.05 default)
         lag: No. of First Significant Lags (default None, You can use 3 for considering first 3 lags, which also proposed by Hamed and Rao(1998))
     Output:
@@ -227,14 +256,16 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mmkh_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.hamed_rao_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -278,7 +309,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
 def yue_wang_modification_test(x, alpha = 0.05, lag=None):
     """
     Input: This function check Modified Mann-Kendall (MK) test using Yue and Wang (2004) method.
-        x:   a vector of data
+        x: a vector of data
         alpha: significance level (0.05 default)
         lag: No. of First Significant Lags (default None, You can use 1 for considering first 1 lags, which also proposed by Yue and Wang (2004))
     Output:
@@ -287,14 +318,16 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mmky_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.yue_wang_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -329,21 +362,23 @@ def pre_whitening_modification_test(x, alpha = 0.05):
     """
     This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
-        x:   a vector of data
+        x: a vector of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
         p: p value of the significance test
         z: normalized test statistics
-        s:
-        sar_s: Variance S
+        s: Mann-Kendal's score
+        var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mmkpw_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.pre_whitening_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
@@ -369,21 +404,23 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     """
     This function check Modified Mann-Kendall (MK) test using trend-free Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
-        x:   a vector of data
+        x: a vector of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
         p: p value of the significance test
         z: normalized test statistics
-        s:
-        sar_s: Variance S
+        s: Mann-Kendal's score
+        var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mmktfpw_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.trend_free_pre_whitening_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_MK_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
     x, c = __preprocessing(x)
     x, n = __missing_values_analysis(x, method = 'skip')
@@ -416,8 +453,7 @@ def multivariate_test(x, alpha = 0.05):
     """
     This function check Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test
     Input:
-        x:   a matrix of data
-        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+        x: a matrix of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
@@ -425,12 +461,14 @@ def multivariate_test(x, alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = multivariate_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.multivariate_test(x,0.05)
     """
     res = namedtuple('Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     s = 0
@@ -473,12 +511,14 @@ def seasonal_test(x, period = 12, alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = seasonal_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.seasonal_test(x,0.05)
     """
     res = namedtuple('Seasonal_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
@@ -500,7 +540,6 @@ def regional_test(x, alpha = 0.05):
     This function check Regional Mann-Kendall (MK) test (Helsel 2006).
     Input:
         x:   a matrix of data
-        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
@@ -508,12 +547,14 @@ def regional_test(x, alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = regional_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.regional_test(x,0.05)
     """
     res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
@@ -534,12 +575,14 @@ def correlated_multivariate_test(x, alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = correlated_multivariate_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_multivariate_test(x,0.05)
     """
     res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
@@ -586,6 +629,7 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
     This function check Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
     Input:
         x:   a matrix of data
+		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
@@ -593,14 +637,16 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = correlated_seasonal_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_seasonal_test(x,0.05)
     """
-    res = namedtuple('Correlated_Seasonal_mk_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Correlated_Seasonal_Mann_Kendall_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     x, c = __preprocessing(x)
 
     n = len(x)
@@ -620,7 +666,7 @@ def partial_test(x, alpha = 0.05):
     """
     This function check Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
-        x:   a matrix of data
+        x: a matrix with 2 columns
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
@@ -628,12 +674,14 @@ def partial_test(x, alpha = 0.05):
         p: p value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
-        s:
+        s: Mann-Kendal's score
         var_s: Variance S
+		slope: sen's slope
     Examples
     --------
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = partial_mk_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope = mk.partial_test(x,0.05)
     """
     res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     

@@ -1,7 +1,7 @@
 # pyMannKendall
 [![Build Status](https://travis-ci.org/mmhs013/pyMannKendall.svg?branch=master)](https://travis-ci.org/mmhs013/pyMannKendall)
 
-pyMannkendal is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen’s slope estimator function. Brief description of functions are below:
+pyMannkendal is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen's slope estimator function. Brief description of functions are below:
 
 1.	**Original Mann Kendall test (*original_test*):** Original Mann Kendall test [@mann1945nonparametric; @kendall1975rank] is a nonparametric test, which does not consider serial correlation or seasonal effects.
 
@@ -25,9 +25,9 @@ pyMannkendal is a pure Python implementation of non-parametric Mann Kendall tren
 
 11.	**Partial MK Test (*partial_test*):** In a real event, many factors are affecting the main studied response parameter, which can bias the trend results. To overcome this problem, Libiseller (2002) [@libiseller2002performance] proposed this partial mk test. It required two parameters as input, where, one is response parameter and other is an independent parameter.
 
-12.	**Theil–Sen’s Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) [@theil1950rank] and Sen (1968) [@sen1968estimates] to estimate the magnitude of the monotonic trend.
+12.	**Theil–sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) [@theil1950rank] and Sen (1968) [@sen1968estimates] to estimate the magnitude of the monotonic trend.
 
-13.	**Seasonal Sen’s Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) [@hipel1994time] to estimate the magnitude of the monotonic trend, when data has seasonal effects.
+13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) [@hipel1994time] to estimate the magnitude of the monotonic trend, when data has seasonal effects.
 
 # Function details:
 
@@ -49,7 +49,7 @@ And all Mann-kendall tests return a named tuple which contained:
 - **var_s**: Variance S
 - **slope**: sen's slope
 
-Sen’s slope function required data vector. seasonal sen’s slope also has optional input period, which by default value is 12. Both sen’s slope function return only slope value.
+sen's slope function required data vector. seasonal sen's slope also has optional input period, which by default value is 12. Both sen's slope function return only slope value.
 
 # Installation
 

@@ -9,14 +9,14 @@ authors:
    orcid: 0000-0002-5361-0633
    affiliation: 1
  - name: Ishtiak Mahmud
-   orcid: 
+   orcid: 0000-0002-4753-5403
    affiliation: 2   
 affiliations:
- - name: Institute of Water and Flood Management, Bangladesh University of Engineering and Technology, Bangladesh
+ - name: Institute of Water and Flood Management, Bangladesh University of Engineering and Technology, Dhaka, Bangladesh
    index: 1
- - name: 
+ - name: Shahjalal University of Science and Technology, Sylhet, Bangladesh
    index: 2
-date: 28 June 2019
+date: 30 June 2019
 bibliography: paper.bib
 ---
 
