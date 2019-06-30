@@ -1,5 +1,5 @@
 ---
-title: 'pyMannKendall: a python package for non parametric mann kendall family of trend tests.'
+title: 'pyMannKendall: a python package for non parametric Mann Kendall family of trend tests.'
 tags:
   - mann kendall
   - modified mann kendall
