@@ -1,5 +1,11 @@
 # pyMannKendall
 [![Build Status](https://travis-ci.org/mmhs013/pyMannKendall.svg?branch=master)](https://travis-ci.org/mmhs013/pyMannKendall)
+![PyPI](https://img.shields.io/pypi/v/pymannkendall.svg)
+![PyPI - License](https://img.shields.io/pypi/l/pymannkendall.svg)
+![PyPI - Status](https://img.shields.io/pypi/status/pymannkendall.svg)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pymannkendall.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)
+
 
 pyMannkendal is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen's slope estimator function. Brief description of functions are below:
 
