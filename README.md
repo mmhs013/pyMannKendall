@@ -3,8 +3,9 @@
 [![PyPI](https://img.shields.io/pypi/v/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - License](https://img.shields.io/pypi/l/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
+[![Downloads](https://pepy.tech/badge/pymannkendall)](https://pepy.tech/project/pymannkendall)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
+[![status](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a/status.svg)](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a)
 
 `pyMannkendal` is a pure Python implementation of non-parametric Mann Kendall trend analysis. Currently, this package has 11 Mann-Kendall Tests and 2 sen's slope estimator function. Brief description of functions are below:
 
@@ -56,9 +57,21 @@ And all Mann-kendall tests return a named tuple which contained:
 
 sen's slope function required data vector. seasonal sen's slope also has optional input period, which by default value is 12. Both sen's slope function return only slope value.
 
+# Dependencies
+
+For the installation of `pyMannKendall`, the following packages are required:
+- [numpy](https://www.numpy.org/)
+- [scipy](https://www.scipy.org/)
+
 # Installation
 
-You can install `pyMannKendall` using pip.
+You can install `pyMannKendall` using pip. For Linux users
+
+```python
+sudo pip install pymannkendall
+```
+
+or, for Windows user
 
 ```python
 pip install pymannkendall
