@@ -32,7 +32,7 @@ Again, Python is one of the widely used tools for data analysis. A large number 
 
 1.	**Original Mann Kendall test (*original_test*):** Original Mann Kendall test [@mann1945nonparametric; @kendall1975rank] is a nonparametric test, which does not consider serial correlation or seasonal effects.
 
-2.	**Hamed and Rao Modified MK Test (*hamed_rao_modification_test*):** This modified MK test proposed by Hamed and Rao [@hamed1998modified] to address serial autocorrelation issues. (Their) They suggested variance correction approach to improve trend analysis. User can consider first n significant lag by insert lag number in this function. By default, it considered all significant lags.
+2.	**Hamed and Rao Modified MK Test (*hamed_rao_modification_test*):** This modified MK test proposed by Hamed and Rao [@hamed1998modified] to address serial autocorrelation issues. They suggested variance correction approach to improve trend analysis. User can consider first n significant lag by insert lag number in this function. By default, it considered all significant lags.
 
 3.	**Yue and Wang Modified MK Test (*yue_wang_modification_test*):** This is also a variance correction method for considered serial autocorrelation proposed by Yue, S., & Wang, C. Y. (2004) [@yue2004mann]. User can also set their desired significant n lags for the calculation.
 
