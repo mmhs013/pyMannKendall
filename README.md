@@ -88,6 +88,14 @@ cd pymannkendall
 python setup.py install
 ```
 
+## Tests
+
+`pyMannKendall` is automatically tested using `pytest` package on each commit [here](https://travis-ci.org/mmhs013/pyMannKendall/), but the tests can be manually run:
+
+```
+pytest -v
+```
+
 ## Usage
 
 A quick example of `pyMannKendall` usage is given below. Several more examples are provided [here](https://github.com/mmhs013/pyMannKendall/blob/master/Examples/Example_pyMannKendall.ipynb).
