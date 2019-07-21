@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+import versioneer
 
 __author__ = "Md. Manjurul Hussain Shourov"
-__version__ = "1.0"
+__version__ = versioneer.get_version()
 __email__ = "mmhs013@gmail.com"
 __license__ = "MIT"
 __copyright__ = "Copyright Md. Manjurul Hussain Shourov (2019)"

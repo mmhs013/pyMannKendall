@@ -1,0 +1,2 @@
+include versioneer.py
+include pymannkendall/_version.py
