@@ -283,7 +283,6 @@ def test_trend_free_pre_whitening_modification_test(NoTrendData, TrendData, arbi
     assert TrendRes.h == True
     assert TrendRes.p == 0.0
     np.testing.assert_allclose(TrendRes.Tau, 1.0, rtol=1e-02)
-    assert TrendRes.s == 64261.0
     np.testing.assert_allclose(TrendRes.slope, 1.0, rtol=1e-02)
     
     # check with arbitrary data
