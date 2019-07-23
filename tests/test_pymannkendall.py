@@ -1,4 +1,4 @@
-# In this unit test file, we check all functions with randomly generated No trendy, trendy, arbitrary data. Those results are compire with R package - modifiedmk, fume, rkt, trend.
+# In this unit test file, we check all functions with randomly generated No trendy, trendy, arbitrary data. Those results are compared with R package - modifiedmk, fume, rkt, trend.
 
 import os
 import pytest
@@ -7,13 +7,13 @@ import pymannkendall as mk
 
 @pytest.fixture
 def NoTrendData():
-    # Generate 360 random value with same number
+    # Generate 360 random value with the same number
     NoTrendData = np.ones(360)*np.random.randint(10)
     return NoTrendData
 
 @pytest.fixture
 def NoTrend2dData():
-    # Generate 2 dimentional 360 random value with same number
+    # Generate 2 dimensional 360 random value with same number
     NoTrend2dData = np.ones((360,2))*np.random.randint(10)
     return NoTrend2dData
     
@@ -63,7 +63,7 @@ def arbitrary_1d_data():
 
 @pytest.fixture
 def arbitrary_2d_data():
-    # Generate arbitrary 80, 2 dimentional data
+    # Generate arbitrary 80, 2 dimensional data
     arbitrary_2d_data = np.array([[ 490.,  458.], [ 540.,  469.], [ 220., 4630.], [ 390.,  321.], [ 450.,  541.],
        [ 230., 1640.], [ 360., 1060.], [ 460.,  264.], [ 430.,  665.], [ 430.,  680.],
        [ 620.,  650.], [ 460., np.nan], [ 450.,  380.], [ 580.,  325.], [ 350., 1020.],

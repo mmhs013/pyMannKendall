@@ -1,11 +1,9 @@
 """
 Created on 05 March 2018
-Update on 30 June 2019
+Update on 23 July 2019
 @author: Md. Manjurul Hussain Shourov
-version: 1.0
+version: 1.1
 Approach: Vectorisation
-
-Remark: Full 11 mk test and 2 sens slope funtion is complete. Need to optimaze and speed up this code,
 """
 
 from __future__ import division
@@ -72,7 +70,7 @@ def __mk_score(x, n):
     return s
 
 	
-# original mann-kendal's variance S calculation
+# original Mann-Kendal's variance S calculation
 def __variance_s(x, n):
     # calculate the unique data
     unique_x = np.unique(x)
@@ -163,7 +161,7 @@ def sens_slope(x):
     """
     This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend.
     Input:
-        x:   a one dimentional vector (list, numpy array or pandas series) data
+        x:   a one dimensional vector (list, numpy array or pandas series) data
     Output:
         slope: sen's slope
     Examples
@@ -181,8 +179,8 @@ def seasonal_sens_slope(x, period=12):
     """
     This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
     Input:
-        x:   a one dimentional vector (list, numpy array or pandas series) data
-		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
+        x:   a vector (list, numpy array or pandas series) data
+		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is the default)
     Output:
         slope: sen's slope
     Examples
@@ -210,14 +208,14 @@ def seasonal_sens_slope(x, period=12):
 	
 def original_test(x, alpha = 0.05):
     """
-    This function check Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert 1987).
+    This function checks the Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert 1987).
     Input:
-        x: a one dimentional vector (list, numpy array or pandas series) data
+        x: a vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -245,15 +243,15 @@ def original_test(x, alpha = 0.05):
 
 def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
     """
-    This function check Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
+    This function checks the Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
     Input:
-        x: a vector of data
+        x: a vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
         lag: No. of First Significant Lags (default None, You can use 3 for considering first 3 lags, which also proposed by Hamed and Rao(1998))
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -308,14 +306,14 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
 
 def yue_wang_modification_test(x, alpha = 0.05, lag=None):
     """
-    Input: This function check Modified Mann-Kendall (MK) test using Yue and Wang (2004) method.
-        x: a vector of data
+    Input: This function checks the Modified Mann-Kendall (MK) test using Yue and Wang (2004) method.
+        x: a vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
         lag: No. of First Significant Lags (default None, You can use 1 for considering first 1 lags, which also proposed by Yue and Wang (2004))
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -360,14 +358,14 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
 
 def pre_whitening_modification_test(x, alpha = 0.05):
     """
-    This function check Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
+    This function checks the Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
-        x: a vector of data
+        x: a vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         s: Mann-Kendal's score
         var_s: Variance S
@@ -402,14 +400,14 @@ def pre_whitening_modification_test(x, alpha = 0.05):
 
 def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     """
-    This function check Modified Mann-Kendall (MK) test using trend-free Pre-Whitening method proposed by Yue and Wang (2002).
+    This function checks the Modified Mann-Kendall (MK) test using the trend-free Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
-        x: a vector of data
+        x: a vector (list, numpy array or pandas series) data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         s: Mann-Kendal's score
         var_s: Variance S
@@ -451,14 +449,14 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
 
 def multivariate_test(x, alpha = 0.05):
     """
-    This function check Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test
+    This function checks the Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for the seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test.
     Input:
         x: a matrix of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -476,13 +474,13 @@ def multivariate_test(x, alpha = 0.05):
     denom = 0
     
     x, c = __preprocessing(x)
-#     x, n = __missing_values_analysis(x, method = 'skip')  # It make same column size
+#     x, n = __missing_values_analysis(x, method = 'skip')  # It makes all column at the same size
 
     for i in range(c):
         if c == 1:
-            x_new, n = __missing_values_analysis(x, method = 'skip')  # It make deferent column size
+            x_new, n = __missing_values_analysis(x, method = 'skip')  # It makes all column at deferent size
         else:
-            x_new, n = __missing_values_analysis(x[:,i], method = 'skip')  # It make deferent column size
+            x_new, n = __missing_values_analysis(x[:,i], method = 'skip')  # It makes all column at deferent size
 
         s = s + __mk_score(x_new, n)
         var_s = var_s + __variance_s(x_new, n)
@@ -500,15 +498,15 @@ def multivariate_test(x, alpha = 0.05):
 
 def seasonal_test(x, period = 12, alpha = 0.05):
     """
-    This function check Seasonal Mann-Kendall (MK) test (Hirsch, R. M., Slack, J. R. 1984).
+    This function checks the  Seasonal Mann-Kendall (MK) test (Hirsch, R. M., Slack, J. R. 1984).
     Input:
         x:   a vector of data
-        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
-        alpha: significance level (0.05 default)
+        period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is the default)
+        alpha: significance level (0.05 is the default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -537,14 +535,14 @@ def seasonal_test(x, period = 12, alpha = 0.05):
 
 def regional_test(x, alpha = 0.05):
     """
-    This function check Regional Mann-Kendall (MK) test (Helsel 2006).
+    This function checks the Regional Mann-Kendall (MK) test (Helsel 2006).
     Input:
         x:   a matrix of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -565,14 +563,14 @@ def regional_test(x, alpha = 0.05):
 
 def correlated_multivariate_test(x, alpha = 0.05):
     """
-    This function check Correlated Multivariate Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
+    This function checks the Correlated Multivariate Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
         x:   a matrix of data
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -626,7 +624,7 @@ def correlated_multivariate_test(x, alpha = 0.05):
 
 def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
     """
-    This function check Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
+    This function checks the Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
     Input:
         x:   a matrix of data
 		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is default)
@@ -634,7 +632,7 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
@@ -664,14 +662,14 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
 
 def partial_test(x, alpha = 0.05):
     """
-    This function check Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
+    This function checks the Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
         x: a matrix with 2 columns
         alpha: significance level (0.05 default)
     Output:
         trend: tells the trend (increasing, decreasing or no trend)
         h: True (if trend is present) or False (if trend is absence)
-        p: p value of the significance test
+        p: p-value of the significance test
         z: normalized test statistics
         Tau: Kendall Tau
         s: Mann-Kendal's score
