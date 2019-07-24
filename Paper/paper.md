@@ -30,31 +30,31 @@ Again, Python is one of the widely used tools for data analysis. A large number 
 
 ``pyMannKendall`` is written in pure python and use vectorization approach to increase its performance. Currently, this package has 11 Mann-Kendall Tests and 2 sen’s slope estimator function. Brief description of functions are below:
 
-1.	**Original Mann-Kendall test (*original_test*):** Original Mann-Kendall test is a nonparametric test, which does not consider serial correlation or seasonal effects.
+1.	**Original Mann-Kendall test (*original_test*):** Original Mann-Kendall test [@mann1945nonparametric; @kendall1975rank] is a nonparametric test, which does not consider serial correlation or seasonal effects.
 
-2.	**Hamed and Rao Modified MK Test (*hamed_rao_modification_test*):** This modified MK test proposed by Hamed and Rao (1998) to address serial autocorrelation issues. They suggested a variance correction approach to improve trend analysis. User can consider first n significant lag by insert lag number in this function. By default, it considered all significant lags.
+2.	**Hamed and Rao Modified MK Test (*hamed_rao_modification_test*):** This modified MK test proposed by Hamed and Rao [@hamed1998modified] to address serial autocorrelation issues. They suggested a variance correction approach to improve trend analysis. User can consider first n significant lag by insert lag number in this function. By default, it considered all significant lags.
 
-3.	**Yue and Wang Modified MK Test (*yue_wang_modification_test*):** This is also a variance correction method for considered serial autocorrelation proposed by Yue, S., & Wang, C. Y. (2004). User can also set their desired significant n lags for the calculation.
+3.	**Yue and Wang Modified MK Test (*yue_wang_modification_test*):** This is also a variance correction method for considered serial autocorrelation proposed by Yue, S., & Wang, C. Y. [@yue2004mann]. User can also set their desired significant n lags for the calculation.
 
-4.	**Modified MK test using Pre-Whitening method (*pre_whitening_modification_test*):** This test suggested by Yue and Wang (2002) to using Pre-Whitening the time series before the application of trend test.
+4.	**Modified MK test using Pre-Whitening method (*pre_whitening_modification_test*):** This test suggested by Yue and Wang [@yue2002applicability] to using Pre-Whitening the time series before the application of trend test.
 
-5.	**Modified MK test using Trend free Pre-Whitening method (*trend_free_pre_whitening_modification_test*):** This test also proposed by Yue and Wang (2002) to remove trend component and then Pre-Whitening the time series before application of trend test.
+5.	**Modified MK test using Trend free Pre-Whitening method (*trend_free_pre_whitening_modification_test*):** This test also proposed by Yue and Wang [@yue2002influence] to remove trend component and then Pre-Whitening the time series before application of trend test.
 
-6.	**Multivariate MK Test (*multivariate_test*):** This is an MK test for multiple parameters proposed by Hirsch (1982). He used this method for seasonal mk test, where he considered every month as a parameter.
+6.	**Multivariate MK Test (*multivariate_test*):** This is an MK test for multiple parameters proposed by Hirsch [@hirsch1982techniques]. He used this method for seasonal mk test, where he considered every month as a parameter.
 
-7.	**Seasonal MK Test (*seasonal_test*):** For seasonal time series data, Hirsch, R.M., Slack, J.R. and Smith, R.A. (1982) proposed this test to calculate the seasonal trend.
+7.	**Seasonal MK Test (*seasonal_test*):** For seasonal time series data, Hirsch, R.M., Slack, J.R. and Smith, R.A. [@hirsch1982techniques] proposed this test to calculate the seasonal trend.
 
-8.	**Regional MK Test (*regional_test*):** Based on Hirsch (1982) proposed seasonal mk test, Helsel, D.R. and Frans, L.M., (2006) suggest regional mk test to calculate the overall trend in a regional scale.
+8.	**Regional MK Test (*regional_test*):** Based on Hirsch [@hirsch1982techniques] proposed seasonal mk test, Helsel, D.R. and Frans, L.M. [@helsel2006regional] suggest regional mk test to calculate the overall trend in a regional scale.
 
-9.	**Correlated Multivariate MK Test (*correlated_multivariate_test*):** This multivariate mk test proposed by Hipel (1994) where the parameters are correlated.
+9.	**Correlated Multivariate MK Test (*correlated_multivariate_test*):** This multivariate mk test proposed by Hipel [@hipel1994time] where the parameters are correlated.
 
-10.	**Correlated Seasonal MK Test (*correlated_seasonal_test*):** This method proposed by Hipel (1994) used, when time series significantly correlated with the preceding one or more months/seasons.
+10.	**Correlated Seasonal MK Test (*correlated_seasonal_test*):** This method proposed by Hipel [@hipel1994time] used, when time series significantly correlated with the preceding one or more months/seasons.
 
-11.	**Partial MK Test (*partial_test*):** In a real event, many factors are affecting the main studied response parameter, which can bias the trend results. To overcome this problem, Libiseller (2002) proposed this partial mk test. It required two parameters as input, where, one is response parameter and other is an independent parameter.
+11.	**Partial MK Test (*partial_test*):** In a real event, many factors are affecting the main studied response parameter, which can bias the trend results. To overcome this problem, Libiseller [@libiseller2002performance] proposed this partial mk test. It required two parameters as input, where, one is response parameter and other is an independent parameter.
 
-12.	**Theil-sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend.
+12.	**Theil-sen's Slope Estimator (*sens_slope*):** This method proposed by Theil [@theil1950rank] and Sen [@sen1968estimates] to estimate the magnitude of the monotonic trend.
 
-13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
+13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel [@hipel1994time] to estimate the magnitude of the monotonic trend, when data has seasonal effects.
 
 
 `pyMannKendall` is a pure Python implemented non-parametric Mann-Kendall trend analysis package, which bring together almost all types of Mann-Kendall Test, which might help researchers to check the Mann-Kendall trend in python.
