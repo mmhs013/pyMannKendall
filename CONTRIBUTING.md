@@ -10,8 +10,8 @@ First of all, thanks for considering contributing to `pyMannKendall`! 👍 It's 
 [email]: mmhs013@gmail.com
 [code_of_conduct]: https://github.com/mmhs013/pyMannKendall/blob/master/CODE_OF_CONDUCT.md
 
-[citation]: https://zenodo.org/record/2540931
-[demo_notebook]: https://a-slide.github.io/pycoQC/pycoQC_usage.html
+[citation]: https://doi.org/10.21105/joss.01556
+[demo_notebook]: https://github.com/mmhs013/pyMannKendall/blob/master/Examples/Example_pyMannKendall.ipynb
 
 ## Code of conduct
 
@@ -25,7 +25,7 @@ There are several ways you can contribute to this project. If you want to know m
 
 Think `pyMannKendall` is useful? Let others discover it, by telling them in person, via Twitter or a blog post.
 
-Using `pyMannKendall` for a paper you are writing? Please cite it. 
+Using `pyMannKendall` for a paper you are writing? Please [cite it][citation]. 
 
 ### Ask a question ⁉️
 
@@ -35,7 +35,7 @@ Still stuck? Post your question as an [issue on GitHub][new_issue].
 
 While we cannot offer user support, we'll try to do our best to address it, as questions often lead to better documentation or the discovery of bugs.
 
-Want to ask a question in private? Contact the package maintainer by [email][email].
+Want to ask a question in private? Contact the package maintainer by email : (mmhs013@gmail.com)[email].
 
 ### Propose an idea 💡
 
