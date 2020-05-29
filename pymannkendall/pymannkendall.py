@@ -171,9 +171,9 @@ def sens_slope(x):
       >>> slope = sens_slope(x)
     """
     x, c = __preprocessing(x)
-    x, n = __missing_values_analysis(x, method = 'skip')
+#     x, n = __missing_values_analysis(x, method = 'skip')
     
-    return np.median(__sens_estimator(x))
+    return np.nanmedian(__sens_estimator(x))
 
 
 def seasonal_sens_slope(x, period=12):
@@ -198,16 +198,16 @@ def seasonal_sens_slope(x, period=12):
 
         x = x.reshape(int(len(x)/period),period)
     
-    x, n = __missing_values_analysis(x, method = 'skip')
+#     x, n = __missing_values_analysis(x, method = 'skip')
     d = []
     
     for i in range(period):
         d.extend(__sens_estimator(x[:,i]))
         
-    return np.median(np.asarray(d))
+    return np.nanmedian(np.asarray(d))
 
 	
-def original_test(x, alpha = 0.05):
+def original_test(x_old, alpha = 0.05):
     """
     This function checks the Mann-Kendall (MK) test (Mann 1945, Kendall 1975, Gilbert 1987).
     Input:
@@ -229,7 +229,7 @@ def original_test(x, alpha = 0.05):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.original_test(x,0.05)
     """
     res = namedtuple('Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     s = __mk_score(x, n)
@@ -238,11 +238,11 @@ def original_test(x, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
+def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
     """
     This function checks the Modified Mann-Kendall (MK) test using Hamed and Rao (1998) method.
     Input:
@@ -265,7 +265,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.hamed_rao_modification_test(x,0.05)
     """
     res = namedtuple('Modified_Mann_Kendall_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     s = __mk_score(x, n)
@@ -280,7 +280,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
         
     # detrending
     # x_detrend = x - np.multiply(range(1,n+1), np.median(x))
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     I = rankdata(x_detrend)
     
@@ -305,7 +305,7 @@ def hamed_rao_modification_test(x, alpha = 0.05, lag=None):
         
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def yue_wang_modification_test(x, alpha = 0.05, lag=None):
+def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
     """
     Input: This function checks the Modified Mann-Kendall (MK) test using Yue and Wang (2004) method.
         x: a vector (list, numpy array or pandas series) data
@@ -327,7 +327,7 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.yue_wang_modification_test(x,0.05)
     """
     res = namedtuple('Modified_Mann_Kendall_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     s = __mk_score(x, n)
@@ -341,7 +341,7 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
         lag = lag + 1
 
     # detrending
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     
     # account for autocorrelation
@@ -357,7 +357,7 @@ def yue_wang_modification_test(x, alpha = 0.05, lag=None):
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def pre_whitening_modification_test(x, alpha = 0.05):
+def pre_whitening_modification_test(x_old, alpha = 0.05):
     """
     This function checks the Modified Mann-Kendall (MK) test using Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
@@ -379,7 +379,7 @@ def pre_whitening_modification_test(x, alpha = 0.05):
     """
     res = namedtuple('Modified_Mann_Kendall_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     # PreWhitening
@@ -395,11 +395,11 @@ def pre_whitening_modification_test(x, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
-def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
+def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
     """
     This function checks the Modified Mann-Kendall (MK) test using the trend-free Pre-Whitening method proposed by Yue and Wang (2002).
     Input:
@@ -421,11 +421,11 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     """
     res = namedtuple('Modified_Mann_Kendall_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     # detrending
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     
     # PreWhitening
@@ -443,12 +443,12 @@ def trend_free_pre_whitening_modification_test(x, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x)
+    slope = sens_slope(x_old)
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def multivariate_test(x, alpha = 0.05):
+def multivariate_test(x_old, alpha = 0.05):
     """
     This function checks the Multivariate Mann-Kendall (MK) test, which is originally proposed by R. M. Hirsch and J. R. Slack (1984) for the seasonal Mann-Kendall test. Later this method also used Helsel (2006) for Regional Mann-Kendall test.
     Input:
@@ -474,7 +474,7 @@ def multivariate_test(x, alpha = 0.05):
     var_s = 0
     denom = 0
     
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
 #     x, n = __missing_values_analysis(x, method = 'skip')  # It makes all column at the same size
 
     for i in range(c):
@@ -492,12 +492,12 @@ def multivariate_test(x, alpha = 0.05):
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
 
-    slope = seasonal_sens_slope(x, period = c)
+    slope = seasonal_sens_slope(x_old, period = c)
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def seasonal_test(x, period = 12, alpha = 0.05):
+def seasonal_test(x_old, period = 12, alpha = 0.05):
     """
     This function checks the  Seasonal Mann-Kendall (MK) test (Hirsch, R. M., Slack, J. R. 1984).
     Input:
@@ -520,7 +520,7 @@ def seasonal_test(x, period = 12, alpha = 0.05):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.seasonal_test(x,0.05)
     """
     res = namedtuple('Seasonal_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     n = len(x)
     
     if x.ndim == 1:
@@ -534,7 +534,7 @@ def seasonal_test(x, period = 12, alpha = 0.05):
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def regional_test(x, alpha = 0.05):
+def regional_test(x_old, alpha = 0.05):
     """
     This function checks the Regional Mann-Kendall (MK) test (Helsel 2006).
     Input:
@@ -557,12 +557,12 @@ def regional_test(x, alpha = 0.05):
     """
     res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
-    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x)
+    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x_old)
     
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def correlated_multivariate_test(x, alpha = 0.05):
+def correlated_multivariate_test(x_old, alpha = 0.05):
     """
     This function checks the Correlated Multivariate Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
@@ -584,7 +584,7 @@ def correlated_multivariate_test(x, alpha = 0.05):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_multivariate_test(x,0.05)
     """
     res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     s = 0
@@ -618,12 +618,12 @@ def correlated_multivariate_test(x, alpha = 0.05):
     z = s / np.sqrt(var_s)
 
     p, h, trend = __p_value(z, alpha)
-    slope = seasonal_sens_slope(x, period=c)
+    slope = seasonal_sens_slope(x_old, period=c)
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
+def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
     """
     This function checks the Correlated Seasonal Mann-Kendall (MK) test (Hipel [1994] ).
     Input:
@@ -646,7 +646,7 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
       >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_seasonal_test(x,0.05)
     """
     res = namedtuple('Correlated_Seasonal_Mann_Kendall_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
-    x, c = __preprocessing(x)
+    x, c = __preprocessing(x_old)
 
     n = len(x)
     
@@ -661,7 +661,7 @@ def correlated_seasonal_test(x, period = 12 ,alpha = 0.05):
     return res(trend, h, p, z, Tau, s, var_s, slope)
 
 
-def partial_test(x, alpha = 0.05):
+def partial_test(x_old, alpha = 0.05):
     """
     This function checks the Partial Mann-Kendall (MK) test (Libiseller and Grimvall (2002)).
     Input:
@@ -684,14 +684,14 @@ def partial_test(x, alpha = 0.05):
     """
     res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
     
-    x_old, c = __preprocessing(x)
-    x_old, n = __missing_values_analysis(x_old, method = 'skip')
+    x_proc, c = __preprocessing(x_old)
+    x_proc, n = __missing_values_analysis(x_proc, method = 'skip')
     
     if c != 2:
         raise ValueError('Partial Mann Kendall test required two parameters/columns. Here column no ' + str(c) + ' is not equal to 2.')
     
-    x = x_old[:,0]
-    y = x_old[:,1]
+    x = x_proc[:,0]
+    y = x_proc[:,1]
     
     x_score = __mk_score(x, n)
     y_score = __mk_score(y, n)
@@ -711,6 +711,6 @@ def partial_test(x, alpha = 0.05):
     z = s / np.sqrt(var_s)
 
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x)
+    slope = sens_slope(x_old[:,0])
 
     return res(trend, h, p, z, Tau, s, var_s, slope)
