@@ -4,6 +4,7 @@
 [![PyPI - License](https://img.shields.io/pypi/l/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![Downloads](https://pepy.tech/badge/pymannkendall)](https://pepy.tech/project/pymannkendall)
+[![Conda](https://img.shields.io/conda/dn/conda-forge/pymannkendall?label=conda-downloads)](https://anaconda.org/conda-forge/pymannkendall)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![status](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a/status.svg)](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a)
 [![DOI](https://zenodo.org/badge/174495388.svg)](https://zenodo.org/badge/latestdoi/174495388)
@@ -181,7 +182,7 @@ If you publish results for which you used `pyMannKendall`, please give credit by
 
 9. Mann, H. B. (1945). Nonparametric tests against trend. *Econometrica: Journal of the Econometric Society*, 245-259. doi:[10.2307/1907187](https://doi.org/10.2307/1907187)
 
-10. Sen, P. K. (1968). Estimates of the regression coefficient based on Kendall’s tau. *Journal of the American statistical association*, 63(324), 1379-1389. doi:[10.1080/01621459.1968.10480934](https://doi.org/10.1080/01621459.1968.10480934)
+10. Sen, P. K. (1968). Estimates of the regression coefficient based on Kendall's tau. *Journal of the American statistical association*, 63(324), 1379-1389. doi:[10.1080/01621459.1968.10480934](https://doi.org/10.1080/01621459.1968.10480934)
 
 11. Theil, H. (1950). A rank-invariant method of linear and polynominal regression analysis (parts 1-3). In *Ned. Akad. Wetensch. Proc. Ser. A* (Vol. 53, pp. 1397-1412).
 
