@@ -58,6 +58,7 @@ And all Mann-Kendall tests return a named tuple which contained:
 - **s**: Mann-Kendal's score
 - **var_s**: Variance S
 - **slope**: sen's slope
+- **intercept**: trend line intercept value, for seasonal test, full period cycle consider as unit time step
 
 sen's slope function required data vector. seasonal sen's slope also has optional input period, which by the default value is 12. Both sen's slope function return only slope value.
 
@@ -113,7 +114,7 @@ print(result)
 ```
 Output are like this:
 ```python
-Mann_Kendall_Test(trend='no trend', h=False, p=0.9535148145990886, z=0.05829353811789905, Tau=0.002073661405137728, s=134.0, var_s=5205500.0, slope=8.408683160625719e-06)
+Mann_Kendall_Test(trend='no trend', h=False, p=0.9507221701045581, z=0.06179991635055463, Tau=0.0021974620860414733, s=142.0, var_s=5205500.0, slope=1.0353584906597959e-05, intercept=0.5232692553379981)
 ```
 Whereas, the output is a named tuple, so you can call by name for specific result:
 ```python
@@ -121,7 +122,7 @@ print(result.slope)
 ```
 or, you can directly unpack your results like this:
 ```python
-trend, h, p, z, Tau, s, var_s, slope = mk.original_test(data)
+trend, h, p, z, Tau, s, var_s, slope, intercept = mk.original_test(data)
 ```
 
 ## Citation

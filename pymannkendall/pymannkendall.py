@@ -1,8 +1,8 @@
 """
 Created on 05 March 2018
-Update on 26 July 2019
+Update on 30 May 2020
 @author: Md. Manjurul Hussain Shourov
-version: 1.1
+version: 1.4
 Approach: Vectorisation
 Citation: Hussain et al., (2019). pyMannKendall: a python package for non parametric Mann Kendall family of trend tests.. Journal of Open Source Software, 4(39), 1556, https://doi.org/10.21105/joss.01556
 """
@@ -165,18 +165,23 @@ def sens_slope(x):
         x:   a one dimensional vector (list, numpy array or pandas series) data
     Output:
         slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
       >>> x = np.random.rand(120)
-      >>> slope = sens_slope(x)
+      >>> slope,intercept = sens_slope(x)
     """
+    res = namedtuple('Sens_Slope_Test', ['slope','intercept'])
     x, c = __preprocessing(x)
 #     x, n = __missing_values_analysis(x, method = 'skip')
+    n = len(x)
+    slope = np.nanmedian(__sens_estimator(x))
+    intercept = np.nanmedian(x) - np.median(np.arange(n)) * slope  # or median(x) - (n-1)/2 *slope
     
-    return np.nanmedian(__sens_estimator(x))
+    return res(slope, intercept)
 
 
-def seasonal_sens_slope(x, period=12):
+def seasonal_sens_slope(x_old, period=12):
     """
     This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
     Input:
@@ -184,12 +189,14 @@ def seasonal_sens_slope(x, period=12):
 		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is the default)
     Output:
         slope: sen's slope
+        intercept: trend line intercept value, where full period cycle consider as unit time step
     Examples
     --------
       >>> x = np.random.rand(120)
-      >>> slope = seasonal_sens_slope(x, 12)
+      >>> slope,intercept = seasonal_sens_slope(x, 12)
     """
-    x, c = __preprocessing(x)
+    res = namedtuple('Seasonal_Sens_Slope_Test', ['slope','intercept'])
+    x, c = __preprocessing(x_old)
     n = len(x)
     
     if x.ndim == 1:
@@ -204,7 +211,10 @@ def seasonal_sens_slope(x, period=12):
     for i in range(period):
         d.extend(__sens_estimator(x[:,i]))
         
-    return np.nanmedian(np.asarray(d))
+    slope = np.nanmedian(np.asarray(d))
+    intercept = np.nanmedian(x_old) - np.median(np.arange(x_old.size) / period) * slope
+    
+    return res(slope, intercept)
 
 	
 def original_test(x_old, alpha = 0.05):
@@ -222,13 +232,14 @@ def original_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
         slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.original_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.original_test(x,0.05)
     """
-    res = namedtuple('Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -238,9 +249,9 @@ def original_test(x_old, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
     """
@@ -258,13 +269,14 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.hamed_rao_modification_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.hamed_rao_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_Mann_Kendall_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Hamed_Rao_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -280,7 +292,7 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
         
     # detrending
     # x_detrend = x - np.multiply(range(1,n+1), np.median(x))
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     I = rankdata(x_detrend)
     
@@ -303,7 +315,7 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
         
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
     """
@@ -320,13 +332,14 @@ def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.yue_wang_modification_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.yue_wang_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_Mann_Kendall_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Yue_Wang_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -341,7 +354,7 @@ def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
         lag = lag + 1
 
     # detrending
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     
     # account for autocorrelation
@@ -355,7 +368,7 @@ def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 def pre_whitening_modification_test(x_old, alpha = 0.05):
     """
@@ -371,13 +384,14 @@ def pre_whitening_modification_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.pre_whitening_modification_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.pre_whitening_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_Mann_Kendall_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
@@ -395,9 +409,9 @@ def pre_whitening_modification_test(x_old, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
     
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
     """
@@ -413,19 +427,20 @@ def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.trend_free_pre_whitening_modification_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.trend_free_pre_whitening_modification_test(x,0.05)
     """
-    res = namedtuple('Modified_Mann_Kendall_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Modified_Mann_Kendall_Test_Trend_Free_PreWhitening_Approach', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
     # detrending
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
     x_detrend = x - np.arange(1,n+1) * slope
     
     # PreWhitening
@@ -443,9 +458,9 @@ def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
     
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x_old)
+    slope, intercept = sens_slope(x_old)
     
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def multivariate_test(x_old, alpha = 0.05):
@@ -463,13 +478,14 @@ def multivariate_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.multivariate_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.multivariate_test(x,0.05)
     """
-    res = namedtuple('Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     s = 0
     var_s = 0
     denom = 0
@@ -492,9 +508,9 @@ def multivariate_test(x_old, alpha = 0.05):
     z = __z_score(s, var_s)
     p, h, trend = __p_value(z, alpha)
 
-    slope = seasonal_sens_slope(x_old, period = c)
+    slope, intercept = seasonal_sens_slope(x_old, period = c)
     
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def seasonal_test(x_old, period = 12, alpha = 0.05):
@@ -513,13 +529,14 @@ def seasonal_test(x_old, period = 12, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value, where full period cycle consider as unit time step
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.seasonal_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.seasonal_test(x,0.05)
     """
-    res = namedtuple('Seasonal_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Seasonal_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
     n = len(x)
     
@@ -529,9 +546,9 @@ def seasonal_test(x_old, period = 12, alpha = 0.05):
 
         x = x.reshape(int(len(x)/period),period)
     
-    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x, alpha = alpha)
+    trend, h, p, z, Tau, s, var_s, slope, intercept = multivariate_test(x, alpha = alpha)
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def regional_test(x_old, alpha = 0.05):
@@ -549,17 +566,18 @@ def regional_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.regional_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.regional_test(x,0.05)
     """
-    res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
-    trend, h, p, z, Tau, s, var_s, slope = multivariate_test(x_old)
+    trend, h, p, z, Tau, s, var_s, slope, intercept = multivariate_test(x_old)
     
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def correlated_multivariate_test(x_old, alpha = 0.05):
@@ -577,13 +595,14 @@ def correlated_multivariate_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_multivariate_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.correlated_multivariate_test(x,0.05)
     """
-    res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
     x, n = __missing_values_analysis(x, method = 'skip')
     
@@ -618,9 +637,9 @@ def correlated_multivariate_test(x_old, alpha = 0.05):
     z = s / np.sqrt(var_s)
 
     p, h, trend = __p_value(z, alpha)
-    slope = seasonal_sens_slope(x_old, period=c)
+    slope, intercept = seasonal_sens_slope(x_old, period=c)
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
@@ -639,13 +658,14 @@ def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value, where full period cycle consider as unit time step
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.correlated_seasonal_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.correlated_seasonal_test(x,0.05)
     """
-    res = namedtuple('Correlated_Seasonal_Mann_Kendall_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Correlated_Seasonal_Mann_Kendall_test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     x, c = __preprocessing(x_old)
 
     n = len(x)
@@ -656,9 +676,9 @@ def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
 
         x = x.reshape(int(len(x)/period),period)
     
-    trend, h, p, z, Tau, s, var_s, slope = correlated_multivariate_test(x)
+    trend, h, p, z, Tau, s, var_s, slope, intercept = correlated_multivariate_test(x)
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
 
 def partial_test(x_old, alpha = 0.05):
@@ -676,13 +696,14 @@ def partial_test(x_old, alpha = 0.05):
         s: Mann-Kendal's score
         var_s: Variance S
 		slope: sen's slope
+        intercept: trend line intercept value
     Examples
     --------
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
-      >>> trend,h,p,z,tau,s,var_s,slope = mk.partial_test(x,0.05)
+      >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.partial_test(x,0.05)
     """
-    res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope'])
+    res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
     x_proc, c = __preprocessing(x_old)
     x_proc, n = __missing_values_analysis(x_proc, method = 'skip')
@@ -711,6 +732,6 @@ def partial_test(x_old, alpha = 0.05):
     z = s / np.sqrt(var_s)
 
     p, h, trend = __p_value(z, alpha)
-    slope = sens_slope(x_old[:,0])
+    slope, intercept = sens_slope(x_old[:,0])
 
-    return res(trend, h, p, z, Tau, s, var_s, slope)
+    return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
