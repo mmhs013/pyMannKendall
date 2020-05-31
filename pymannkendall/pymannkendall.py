@@ -160,7 +160,7 @@ def __sens_estimator(x):
 
 def sens_slope(x):
     """
-    This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend.
+    This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend. Intercept calculated using Conover, W.J. (1980) method.
     Input:
         x:   a one dimensional vector (list, numpy array or pandas series) data
     Output:
@@ -176,14 +176,14 @@ def sens_slope(x):
 #     x, n = __missing_values_analysis(x, method = 'skip')
     n = len(x)
     slope = np.nanmedian(__sens_estimator(x))
-    intercept = np.nanmedian(x) - np.median(np.arange(n)) * slope  # or median(x) - (n-1)/2 *slope
+    intercept = np.nanmedian(x) - np.median(np.arange(n)[~np.isnan(x.flatten())]) * slope  # or median(x) - (n-1)/2 *slope
     
     return res(slope, intercept)
 
 
 def seasonal_sens_slope(x_old, period=12):
     """
-    This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
+    This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects. Intercept calculated using Conover, W.J. (1980) method.
     Input:
         x:   a vector (list, numpy array or pandas series) data
 		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is the default)
@@ -212,7 +212,7 @@ def seasonal_sens_slope(x_old, period=12):
         d.extend(__sens_estimator(x[:,i]))
         
     slope = np.nanmedian(np.asarray(d))
-    intercept = np.nanmedian(x_old) - np.median(np.arange(x_old.size) / period) * slope
+    intercept = np.nanmedian(x_old) - np.median(np.arange(x_old.size)[~np.isnan(x_old.flatten())]) / period * slope
     
     return res(slope, intercept)
 

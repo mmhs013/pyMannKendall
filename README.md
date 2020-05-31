@@ -36,9 +36,9 @@ Mann-Kendall Test is a powerful trend test, so several others modified Mann-Kend
 
 11.	**Partial MK Test (*partial_test*):** In a real event, many factors are affecting the main studied response parameter, which can bias the trend results. To overcome this problem, Libiseller (2002) proposed this partial mk test. It required two parameters as input, where, one is response parameter and other is an independent parameter.
 
-12.	**Theil-sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend.
+12.	**Theil-sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend. Intercept is calculate using Conover, W.J. (1980) method.
 
-13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects.
+13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects. Intercept is calculate using Conover, W.J. (1980) method.
 
 ## Function details:
 
@@ -166,29 +166,33 @@ If you publish results for which you used `pyMannKendall`, please give credit by
 
 1. Bari, S. H., Rahman, M. T. U., Hoque, M. A., & Hussain, M. M. (2016). Analysis of seasonal and annual rainfall trends in the northern region of Bangladesh. *Atmospheric Research*, 176, 148-158. doi:[10.1016/j.atmosres.2016.02.008](https://doi.org/10.1016/j.atmosres.2016.02.008)
 
-2. Cox, D. R., & Stuart, A. (1955). Some quick sign tests for trend in location and dispersion. *Biometrika*, 42(1/2), 80-95. doi:[10.2307/2333424](https://doi.org/10.2307/2333424)
+2. Conover, W.J., (1980). Some methods based on ranks (Chapter 5), [Practical nonparametric statistics (2nd Ed.)](https://www.wiley.com/en-us/Practical+Nonparametric+Statistics%2C+3rd+Edition-p-9780471160687), *John Wiley and Sons*.
 
-3. Hamed, K. H., & Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. *Journal of hydrology*, 204(1-4), 182-196. doi:[10.1016/S0022-1694(97)00125-X](https://doi.org/10.1016/S0022-1694(97)00125-X)
+3. Cox, D. R., & Stuart, A. (1955). Some quick sign tests for trend in location and dispersion. *Biometrika*, 42(1/2), 80-95. doi:[10.2307/2333424](https://doi.org/10.2307/2333424)
 
-4. Helsel, D. R., & Frans, L. M. (2006). Regional Kendall test for trend. *Environmental science & technology*, 40(13), 4066-4073. doi:[10.1021/es051650b](https://doi.org/10.1021/es051650b)
+4. Hamed, K. H., & Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. *Journal of hydrology*, 204(1-4), 182-196. doi:[10.1016/S0022-1694(97)00125-X](https://doi.org/10.1016/S0022-1694(97)00125-X)
 
-5. Hipel, K. W., & McLeod, A. I. (1994). Time series modelling of water resources and environmental systems (Vol. 45). Elsevier.
+5. Helsel, D. R., & Frans, L. M. (2006). Regional Kendall test for trend. *Environmental science & technology*, 40(13), 4066-4073. doi:[10.1021/es051650b](https://doi.org/10.1021/es051650b)
 
-6. Hirsch, R. M., Slack, J. R., & Smith, R. A. (1982). Techniques of trend analysis for monthly water quality data. *Water resources research*, 18(1), 107-121. doi:[10.1029/WR018i001p00107](https://doi.org/10.1029/WR018i001p00107)
+6. Hipel, K. W., & McLeod, A. I. (1994). Time series modelling of water resources and environmental systems (Vol. 45). Elsevier.
 
-7. Kendall, M. (1975). Rank correlation measures. *Charles Griffin*, London, 202, 15.
+7. Hirsch, R. M., Slack, J. R., & Smith, R. A. (1982). Techniques of trend analysis for monthly water quality data. *Water resources research*, 18(1), 107-121. doi:[10.1029/WR018i001p00107](https://doi.org/10.1029/WR018i001p00107)
 
-8. Libiseller, C., & Grimvall, A. (2002). Performance of partial Mann-Kendall tests for trend detection in the presence of covariates. *Environmetrics: The official journal of the International Environmetrics Society*, 13(1), 71-84. doi:[10.1002/env.507](https://doi.org/1010.1002/env.507)
+8. Jacquelin Dietz, E., (1987). A comparison of robust estimators in simple linear regression: A comparison of robust estimators. Communications in Statistics-Simulation and Computation, 16(4), pp.1209-1227. doi: [10.1080/03610918708812645](https://doi.org/10.1080/03610918708812645)
 
-9. Mann, H. B. (1945). Nonparametric tests against trend. *Econometrica: Journal of the Econometric Society*, 245-259. doi:[10.2307/1907187](https://doi.org/10.2307/1907187)
+9. Kendall, M. (1975). Rank correlation measures. *Charles Griffin*, London, 202, 15.
 
-10. Sen, P. K. (1968). Estimates of the regression coefficient based on Kendall's tau. *Journal of the American statistical association*, 63(324), 1379-1389. doi:[10.1080/01621459.1968.10480934](https://doi.org/10.1080/01621459.1968.10480934)
+10. Libiseller, C., & Grimvall, A. (2002). Performance of partial Mann-Kendall tests for trend detection in the presence of covariates. *Environmetrics: The official journal of the International Environmetrics Society*, 13(1), 71-84. doi:[10.1002/env.507](https://doi.org/1010.1002/env.507)
 
-11. Theil, H. (1950). A rank-invariant method of linear and polynominal regression analysis (parts 1-3). In *Ned. Akad. Wetensch. Proc. Ser. A* (Vol. 53, pp. 1397-1412).
+11. Mann, H. B. (1945). Nonparametric tests against trend. *Econometrica: Journal of the Econometric Society*, 245-259. doi:[10.2307/1907187](https://doi.org/10.2307/1907187)
 
-12. Yue, S., & Wang, C. (2004). The Mann-Kendall test modified by effective sample size to detect trend in serially correlated hydrological series. *Water resources management*, 18(3), 201-218. doi:[10.1023/B:WARM.0000043140.61082.60](https://doi.org/10.1023/B:WARM.0000043140.61082.60)
+12. Sen, P. K. (1968). Estimates of the regression coefficient based on Kendall's tau. *Journal of the American statistical association*, 63(324), 1379-1389. doi:[10.1080/01621459.1968.10480934](https://doi.org/10.1080/01621459.1968.10480934)
 
-13. Yue, S., & Wang, C. Y. (2002). Applicability of prewhitening to eliminate the influence of serial correlation on the Mann-Kendall test. *Water resources research*, 38(6), 4-1. doi:[10.1029/2001WR000861](https://doi.org/10.1029/2001WR000861)
+13. Theil, H. (1950). A rank-invariant method of linear and polynominal regression analysis (parts 1-3). In *Ned. Akad. Wetensch. Proc. Ser. A* (Vol. 53, pp. 1397-1412).
 
-14. Yue, S., Pilon, P., Phinney, B., & Cavadias, G. (2002). The influence of autocorrelation on the ability to detect trend in hydrological series. *Hydrological processes*, 16(9), 1807-1829. doi:[10.1002/hyp.1095](https://doi.org/10.1002/hyp.1095)
+14. Yue, S., & Wang, C. (2004). The Mann-Kendall test modified by effective sample size to detect trend in serially correlated hydrological series. *Water resources management*, 18(3), 201-218. doi:[10.1023/B:WARM.0000043140.61082.60](https://doi.org/10.1023/B:WARM.0000043140.61082.60)
+
+15. Yue, S., & Wang, C. Y. (2002). Applicability of prewhitening to eliminate the influence of serial correlation on the Mann-Kendall test. *Water resources research*, 38(6), 4-1. doi:[10.1029/2001WR000861](https://doi.org/10.1029/2001WR000861)
+
+16. Yue, S., Pilon, P., Phinney, B., & Cavadias, G. (2002). The influence of autocorrelation on the ability to detect trend in hydrological series. *Hydrological processes*, 16(9), 1807-1829. doi:[10.1002/hyp.1095](https://doi.org/10.1002/hyp.1095)
 

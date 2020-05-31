@@ -82,6 +82,33 @@ def arbitrary_2d_data():
        [ 230., 2340.], [ 470.,  239.], [ 330., 1400.], [ 320., 3070.], [ 500.,  244.]])
     return arbitrary_2d_data
 
+def test_sens_slope(NoTrendData, TrendData, arbitrary_1d_data):
+    # check with no trend data
+    NoTrendRes = mk.sens_slope(NoTrendData)
+    assert NoTrendRes.slope == 0.0
+    
+    # check with trendy data
+    TrendRes = mk.sens_slope(TrendData)
+    assert TrendRes.slope == 1.0
+    assert round(TrendRes.intercept) == 0.0
+    
+    result = mk.sens_slope(arbitrary_1d_data)
+    assert result.slope == -0.006369426751592357
+    assert result.intercept == 96.15286624203821
+    
+def test_seasonal_sens_slope(NoTrendData, TrendData, arbitrary_1d_data):
+    # check with no trend data
+    NoTrendRes = mk.seasonal_sens_slope(NoTrendData)
+    assert NoTrendRes.slope == 0.0
+    
+    # check with trendy data
+    TrendRes = mk.seasonal_sens_slope(TrendData)
+    assert TrendRes.slope == 12.0
+    assert round(TrendRes.intercept) == 0.0
+    
+    result = mk.seasonal_sens_slope(arbitrary_1d_data)
+    assert result.slope == -0.08695652173913043
+    assert result.intercept == 96.31159420289855
 
 def test_original_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -93,7 +120,6 @@ def test_original_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
     assert NoTrendRes.var_s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.original_test(TrendData)
@@ -102,7 +128,6 @@ def test_original_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 64620.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.original_test(arbitrary_1d_data)
@@ -113,8 +138,6 @@ def test_original_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     assert result.var_s == 4889800.333333333
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
     
 def test_hamed_rao_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -125,7 +148,6 @@ def test_hamed_rao_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.hamed_rao_modification_test(TrendData)
@@ -134,7 +156,6 @@ def test_hamed_rao_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 64620.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.hamed_rao_modification_test(arbitrary_1d_data)
@@ -145,8 +166,6 @@ def test_hamed_rao_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     assert result.var_s == 259723.81316716125
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
     
 def test_hamed_rao_modification_test_lag3(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -157,7 +176,6 @@ def test_hamed_rao_modification_test_lag3(NoTrendData, TrendData, arbitrary_1d_d
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.hamed_rao_modification_test(TrendData, lag=3)
@@ -166,7 +184,6 @@ def test_hamed_rao_modification_test_lag3(NoTrendData, TrendData, arbitrary_1d_d
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 64620.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.hamed_rao_modification_test(arbitrary_1d_data, lag=3)
@@ -177,8 +194,6 @@ def test_hamed_rao_modification_test_lag3(NoTrendData, TrendData, arbitrary_1d_d
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     assert result.var_s == 14228919.889368296
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
 
 def test_yue_wang_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -189,7 +204,6 @@ def test_yue_wang_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.yue_wang_modification_test(TrendData)
@@ -198,7 +212,6 @@ def test_yue_wang_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 64620.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.yue_wang_modification_test(arbitrary_1d_data)
@@ -209,8 +222,6 @@ def test_yue_wang_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     np.testing.assert_allclose(result.var_s, 551950.4269211816)
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
     
 def test_yue_wang_modification_test_lag1(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -221,7 +232,6 @@ def test_yue_wang_modification_test_lag1(NoTrendData, TrendData, arbitrary_1d_da
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.yue_wang_modification_test(TrendData, lag=1)
@@ -230,7 +240,6 @@ def test_yue_wang_modification_test_lag1(NoTrendData, TrendData, arbitrary_1d_da
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 64620.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.yue_wang_modification_test(arbitrary_1d_data, lag=1)
@@ -241,8 +250,6 @@ def test_yue_wang_modification_test_lag1(NoTrendData, TrendData, arbitrary_1d_da
     assert result.Tau == -0.03153167653875869
     assert result.s == -1959.0
     np.testing.assert_allclose(result.var_s, 10377313.384506395)
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
     
 def test_pre_whitening_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -252,14 +259,12 @@ def test_pre_whitening_modification_test(NoTrendData, TrendData, arbitrary_1d_da
     assert NoTrendRes.p == 1.0
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
-    assert NoTrendRes.s == 0.0
     
     # check with trendy data
     TrendRes = mk.pre_whitening_modification_test(TrendData)
     assert TrendRes.trend == 'increasing'
     assert TrendRes.h == True
     assert TrendRes.p == 0.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.pre_whitening_modification_test(arbitrary_1d_data)
@@ -270,8 +275,6 @@ def test_pre_whitening_modification_test(NoTrendData, TrendData, arbitrary_1d_da
     assert result.Tau == -0.003545066045066045
     assert result.s == -219.0
     assert result.var_s == 4865719.0
-    np.testing.assert_allclose(result.slope, -0.006369426751592357)
-    np.testing.assert_allclose(result.intercept, 96.14331210191082)
     
 def test_trend_free_pre_whitening_modification_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -281,7 +284,6 @@ def test_trend_free_pre_whitening_modification_test(NoTrendData, TrendData, arbi
     assert NoTrendRes.p == 1.0
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
-    assert NoTrendRes.s == 0.0
     
     # check with trendy data
     TrendRes = mk.trend_free_pre_whitening_modification_test(TrendData)
@@ -289,7 +291,6 @@ def test_trend_free_pre_whitening_modification_test(NoTrendData, TrendData, arbi
     assert TrendRes.h == True
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
-    assert TrendRes.slope == 1.0
     
     # check with arbitrary data
     result = mk.trend_free_pre_whitening_modification_test(arbitrary_1d_data)
@@ -300,8 +301,6 @@ def test_trend_free_pre_whitening_modification_test(NoTrendData, TrendData, arbi
     assert result.Tau == -0.010198135198135198
     assert result.s == -630.0
     assert result.var_s == 4866576.0
-    assert result.slope == -0.006369426751592357
-    assert result.intercept == 96.14331210191082
     
 def test_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
@@ -312,7 +311,6 @@ def test_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert NoTrendRes.z == 0
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.seasonal_test(TrendData, period=12)
@@ -321,7 +319,6 @@ def test_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert TrendRes.p == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 5220.0
-    assert TrendRes.slope == 12.0
     
     # check with arbitrary data
     result = mk.seasonal_test(arbitrary_1d_data, period=12)
@@ -332,8 +329,6 @@ def test_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.Tau == -0.0794979079497908
     assert result.s == -399.0
     assert result.var_s == 34702.333333333336
-    assert result.slope == -0.08695652173913043
-    assert result.intercept == 96.30072463768116
     
 def test_regional_test(NoTrend2dData,arbitrary_2d_data):
     # check with no trend data
@@ -386,7 +381,6 @@ def test_correlated_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert NoTrendRes.h == False
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
-    assert NoTrendRes.slope == 0.0
     
     # check with trendy data
     TrendRes = mk.correlated_seasonal_test(TrendData, period=12)
@@ -395,7 +389,6 @@ def test_correlated_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert round(TrendRes.p) == 0.0
     assert TrendRes.Tau == 1.0
     assert TrendRes.s == 5220.0
-    assert TrendRes.slope == 12.0
     
     # check with arbitrary data
     result = mk.correlated_seasonal_test(arbitrary_1d_data, period=12)
@@ -406,8 +399,6 @@ def test_correlated_seasonal_test(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.Tau == -0.10054347826086957
     assert result.s == -333.0
     assert result.var_s == 31427.666666666664
-    assert result.slope == -0.08695652173913043
-    assert result.intercept == 96.30072463768116
     
 def test_partial_test(NoTrend2dData,arbitrary_2d_data):
     # check with no trend data
@@ -419,7 +410,6 @@ def test_partial_test(NoTrend2dData,arbitrary_2d_data):
     assert NoTrendRes.Tau == 0.0
     assert NoTrendRes.s == 0.0
     assert NoTrendRes.var_s == 5205500.0
-    assert NoTrendRes.slope == 0.0
     
     # check with arbitrary data
     result = mk.partial_test(arbitrary_2d_data)
@@ -431,4 +421,4 @@ def test_partial_test(NoTrend2dData,arbitrary_2d_data):
     assert result.s == -282.53012319329804
     assert result.var_s == 23740.695506142725
     assert result.slope == -0.5634920634920635
-    assert result.intercept == 472.2579365079365
+    assert result.intercept == 471.9761904761905
