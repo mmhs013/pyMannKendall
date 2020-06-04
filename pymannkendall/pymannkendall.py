@@ -2,7 +2,7 @@
 Created on 05 March 2018
 Update on 30 May 2020
 @author: Md. Manjurul Hussain Shourov
-version: 1.4
+version: 1.4.1
 Approach: Vectorisation
 Citation: Hussain et al., (2019). pyMannKendall: a python package for non parametric Mann Kendall family of trend tests.. Journal of Open Source Software, 4(39), 1556, https://doi.org/10.21105/joss.01556
 """
@@ -164,8 +164,8 @@ def sens_slope(x):
     Input:
         x:   a one dimensional vector (list, numpy array or pandas series) data
     Output:
-        slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
       >>> x = np.random.rand(120)
@@ -188,8 +188,8 @@ def seasonal_sens_slope(x_old, period=12):
         x:   a vector (list, numpy array or pandas series) data
 		period: seasonal cycle. For monthly data it is 12, weekly data it is 52 (12 is the default)
     Output:
-        slope: sen's slope
-        intercept: trend line intercept value, where full period cycle consider as unit time step
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
       >>> x = np.random.rand(120)
@@ -231,8 +231,8 @@ def original_test(x_old, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-        slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -268,8 +268,8 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -331,8 +331,8 @@ def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -383,8 +383,8 @@ def pre_whitening_modification_test(x_old, alpha = 0.05):
         z: normalized test statistics
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -426,8 +426,8 @@ def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
         z: normalized test statistics
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -477,8 +477,8 @@ def multivariate_test(x_old, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -528,8 +528,8 @@ def seasonal_test(x_old, period = 12, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value, where full period cycle consider as unit time step
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -565,8 +565,8 @@ def regional_test(x_old, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -594,8 +594,8 @@ def correlated_multivariate_test(x_old, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -657,8 +657,8 @@ def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value, where full period cycle consider as unit time step
+        slope: Theil-Sen estimator/slope
+        intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
 	  >>> import pymannkendall as mk
@@ -695,8 +695,7 @@ def partial_test(x_old, alpha = 0.05):
         Tau: Kendall Tau
         s: Mann-Kendal's score
         var_s: Variance S
-		slope: sen's slope
-        intercept: trend line intercept value
+        slope: Theil-Sen estimator/slope
     Examples
     --------
 	  >>> import pymannkendall as mk

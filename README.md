@@ -36,9 +36,9 @@ Mann-Kendall Test is a powerful trend test, so several others modified Mann-Kend
 
 11.	**Partial MK Test (*partial_test*):** In a real event, many factors are affecting the main studied response parameter, which can bias the trend results. To overcome this problem, Libiseller (2002) proposed this partial mk test. It required two parameters as input, where, one is response parameter and other is an independent parameter.
 
-12.	**Theil-sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend. Intercept is calculate using Conover, W.J. (1980) method.
+12.	**Theil-Sen's Slope Estimator (*sens_slope*):** This method proposed by Theil (1950) and Sen (1968) to estimate the magnitude of the monotonic trend. Intercept is calculate using Conover, W.J. (1980) method.
 
-13.	**Seasonal sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects. Intercept is calculate using Conover, W.J. (1980) method.
+13.	**Seasonal Theil-Sen's Slope Estimator (*seasonal_sens_slope*):** This method proposed by Hipel (1994) to estimate the magnitude of the monotonic trend, when data has seasonal effects. Intercept is calculate using Conover, W.J. (1980) method.
 
 ## Function details:
 
@@ -58,8 +58,8 @@ And all Mann-Kendall tests return a named tuple which contained:
 - **Tau**: Kendall Tau
 - **s**: Mann-Kendal's score
 - **var_s**: Variance S
-- **slope**: sen's slope
-- **intercept**: trend line intercept value, for seasonal test, full period cycle consider as unit time step
+- **slope**: Theil-Sen estimator/slope
+- **intercept**: intercept of Kendall-Theil Robust Line, for seasonal test, full period cycle consider as unit time step
 
 sen's slope function required data vector. seasonal sen's slope also has optional input period, which by the default value is 12. Both sen's slope function return only slope value.
 

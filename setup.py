@@ -8,7 +8,7 @@ __author__ = "Md. Manjurul Hussain Shourov"
 __version__ = versioneer.get_version()
 __email__ = "mmhs013@gmail.com"
 __license__ = "MIT"
-__copyright__ = "Copyright Md. Manjurul Hussain Shourov (2019)"
+__copyright__ = "Copyright Md. Manjurul Hussain Shourov (2020)"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -16,6 +16,7 @@ with open("README.md", "r") as fh:
 setup(
     name = "pymannkendall",
     version = __version__,
+	cmdclass=versioneer.get_cmdclass(),
     author = __author__,
     author_email = __email__,
     description = ("A python package for non-parametric Mann-Kendall family of trend tests."),
