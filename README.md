@@ -3,9 +3,14 @@
 [![PyPI](https://img.shields.io/pypi/v/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - License](https://img.shields.io/pypi/l/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
+
 [![Downloads](https://pepy.tech/badge/pymannkendall)](https://pepy.tech/project/pymannkendall)
 [![Conda](https://img.shields.io/conda/dn/conda-forge/pymannkendall?label=conda-downloads)](https://anaconda.org/conda-forge/pymannkendall)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
+
+[![Google Scholar](https://github.com/mmhs013/Citation_Parser/blob/main/images/gs_pymk_cite.svg?raw=true)](https://scholar.google.com/scholar?q=pyMannKendall%3A+a+python+package+for+non+parametric+Mann+Kendall+family+of+trend+tests.)
+[![Researchgate](https://github.com/mmhs013/Citation_Parser/blob/main/images/rg_pymk_cite.svg?raw=true)](https://www.researchgate.net/publication/334688255_pyMannKendall_a_python_package_for_non_parametric_Mann_Kendall_family_of_trend_tests)
+
 [![status](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a/status.svg)](http://joss.theoj.org/papers/14903dbd55343be89105112e585d262a)
 [![DOI](https://zenodo.org/badge/174495388.svg)](https://zenodo.org/badge/latestdoi/174495388)
 
