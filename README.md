@@ -133,6 +133,9 @@ trend, h, p, z, Tau, s, var_s, slope, intercept = mk.original_test(data)
 
 ## Citation
 
+[![Google Scholar](https://github.com/mmhs013/Citation_Parser/blob/main/images/gs_pymk_cite.svg?raw=true)](https://scholar.google.com/scholar?q=pyMannKendall%3A+a+python+package+for+non+parametric+Mann+Kendall+family+of+trend+tests.)
+[![Researchgate](https://github.com/mmhs013/Citation_Parser/blob/main/images/rg_pymk_cite.svg?raw=true)](https://www.researchgate.net/publication/334688255_pyMannKendall_a_python_package_for_non_parametric_Mann_Kendall_family_of_trend_tests)
+
 If you publish results for which you used `pyMannKendall`, please give credit by citing [Hussain et al., (2019)](https://doi.org/10.21105/joss.01556):
 
 > Hussain et al., (2019). pyMannKendall: a python package for non parametric Mann Kendall family of trend tests.. Journal of Open Source Software, 4(39), 1556, https://doi.org/10.21105/joss.01556
