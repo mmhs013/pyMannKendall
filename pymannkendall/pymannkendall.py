@@ -168,8 +168,10 @@ def sens_slope(x):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(120)
-      >>> slope,intercept = sens_slope(x)
+      >>> slope,intercept = mk.sens_slope(x)
     """
     res = namedtuple('Sens_Slope_Test', ['slope','intercept'])
     x, c = __preprocessing(x)
@@ -192,8 +194,10 @@ def seasonal_sens_slope(x_old, period=12):
         intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
+      >>> import numpy as np
+	  >>> import pymannkendall as mk
       >>> x = np.random.rand(120)
-      >>> slope,intercept = seasonal_sens_slope(x, 12)
+      >>> slope,intercept = mk.seasonal_sens_slope(x, 12)
     """
     res = namedtuple('Seasonal_Sens_Slope_Test', ['slope','intercept'])
     x, c = __preprocessing(x_old)
@@ -235,7 +239,8 @@ def original_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
-	  >>> import pymannkendall as mk
+	  >>> import numpy as np
+      >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.original_test(x,0.05)
     """
@@ -272,6 +277,7 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.hamed_rao_modification_test(x,0.05)
@@ -335,6 +341,7 @@ def yue_wang_modification_test(x_old, alpha = 0.05, lag=None):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.yue_wang_modification_test(x,0.05)
@@ -387,6 +394,7 @@ def pre_whitening_modification_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.pre_whitening_modification_test(x,0.05)
@@ -430,6 +438,7 @@ def trend_free_pre_whitening_modification_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.trend_free_pre_whitening_modification_test(x,0.05)
@@ -481,6 +490,7 @@ def multivariate_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.multivariate_test(x,0.05)
@@ -532,6 +542,7 @@ def seasonal_test(x_old, period = 12, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.seasonal_test(x,0.05)
@@ -569,8 +580,9 @@ def regional_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
-      >>> x = np.random.rand(1000)
+      >>> x = np.random.rand(1000,5)  # here consider 5 station/location where every station have 1000 data
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.regional_test(x,0.05)
     """
     res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
@@ -598,8 +610,9 @@ def correlated_multivariate_test(x_old, alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
-      >>> x = np.random.rand(1000)
+      >>> x = np.random.rand(1000, 2)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.correlated_multivariate_test(x,0.05)
     """
     res = namedtuple('Correlated_Multivariate_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
@@ -661,6 +674,7 @@ def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
         intercept: intercept of Kendall-Theil Robust Line, where full period cycle consider as unit time step
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
       >>> x = np.random.rand(1000)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.correlated_seasonal_test(x,0.05)
@@ -698,8 +712,9 @@ def partial_test(x_old, alpha = 0.05):
         slope: Theil-Sen estimator/slope
     Examples
     --------
+      >>> import numpy as np
 	  >>> import pymannkendall as mk
-      >>> x = np.random.rand(1000)
+      >>> x = np.random.rand(1000, 2)
       >>> trend,h,p,z,tau,s,var_s,slope,intercept = mk.partial_test(x,0.05)
     """
     res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
