@@ -1,8 +1,8 @@
 """
 Created on 05 March 2018
-Update on 30 May 2020
+Update on 28 May 2021
 @author: Md. Manjurul Hussain Shourov
-version: 1.4.1
+version: 1.4.2
 Approach: Vectorisation
 Citation: Hussain et al., (2019). pyMannKendall: a python package for non parametric Mann Kendall family of trend tests.. Journal of Open Source Software, 4(39), 1556, https://doi.org/10.21105/joss.01556
 """
@@ -16,7 +16,7 @@ from collections import namedtuple
 # Supporting Functions
 # Data Preprocessing
 def __preprocessing(x):
-    x = np.asarray(x)
+    x = np.asarray(x).astype(np.float)
     dim = x.ndim
     
     if dim == 1:

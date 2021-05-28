@@ -20,7 +20,7 @@ def NoTrend2dData():
 @pytest.fixture
 def TrendData():
     # Generate random 360 trendy data with approx. slope 1 
-    TrendData = np.arange(360).astype(float) + np.random.rand(360)/10**13
+    TrendData = np.arange(360).astype(np.float) + np.random.rand(360)/10**13
     return TrendData
 
 @pytest.fixture
