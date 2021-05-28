@@ -1,5 +1,5 @@
 # pyMannKendall
-[![Build Status](https://travis-ci.org/mmhs013/pyMannKendall.svg?branch=master)](https://travis-ci.org/mmhs013/pyMannKendall)
+[![Build Status](https://travis-ci.com/mmhs013/pyMannKendall.svg?branch=master)](https://travis-ci.com/mmhs013/pyMannKendall)
 [![PyPI](https://img.shields.io/pypi/v/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - License](https://img.shields.io/pypi/l/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pymannkendall.svg)](https://pypi.org/project/pymannkendall/)
