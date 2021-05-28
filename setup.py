@@ -8,7 +8,7 @@ __author__ = "Md. Manjurul Hussain Shourov"
 __version__ = versioneer.get_version()
 __email__ = "mmhs013@gmail.com"
 __license__ = "MIT"
-__copyright__ = "Copyright Md. Manjurul Hussain Shourov (2020)"
+__copyright__ = "Copyright Md. Manjurul Hussain Shourov (2019)"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -33,6 +33,7 @@ setup(
 		"Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
 		"Programming Language :: Python :: 3.8",
+		"Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
 		"Intended Audience :: Science/Research",
 		"Operating System :: OS Independent",
