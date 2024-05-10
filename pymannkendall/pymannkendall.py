@@ -299,11 +299,9 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
     # detrending
     # x_detrend = x - np.multiply(range(1,n+1), np.median(x))
     slope, intercept = sens_slope(x_old)
-    x_detrend = x - np.arange(1,n+1) * slope
-    I = rankdata(x_detrend)
-    
+	
     # account for autocorrelation
-    acf_1 = __acf(I, nlags=lag-1)
+    acf_1 = __acf(x, nlags=lag-1)
     interval = norm.ppf(1 - alpha / 2) / np.sqrt(n)
     upper_bound = 0 + interval
     lower_bound = 0 - interval
