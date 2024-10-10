@@ -57,7 +57,10 @@ def __acf(x, nlags):
     
     acov = (np.correlate(y, y, 'full') / d)[n - 1:]
     
-    return acov[:nlags+1]/acov[0]
+    if acov[0] != 0 :
+        return acov[:nlags+1]/acov[0]
+    else :
+        return acov[:nlags+1]     
 
 
 # vectorization approach to calculate mk score, S
