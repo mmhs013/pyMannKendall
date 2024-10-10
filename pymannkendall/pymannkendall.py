@@ -315,7 +315,7 @@ def hamed_rao_modification_test(x_old, alpha = 0.05, lag=None):
         else:
             sni += (n-i) * (n-i-1) * (n-i-2) * acf_1[i]
             
-    n_ns = 1 + (2 / (n * (n-1) * (n-2))) * sni
+    n_ns = 1 + (2 / (n * (n-1) * (n-2))) * abs(sni)
     var_s = var_s * n_ns
     
     z = __z_score(s, var_s)
