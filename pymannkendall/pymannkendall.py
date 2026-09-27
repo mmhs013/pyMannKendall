@@ -590,7 +590,7 @@ def regional_test(x_old, alpha = 0.05):
     """
     res = namedtuple('Regional_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
-    trend, h, p, z, Tau, s, var_s, slope, intercept = multivariate_test(x_old)
+    trend, h, p, z, Tau, s, var_s, slope, intercept = multivariate_test(x_old, alpha = alpha)
     
     return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
