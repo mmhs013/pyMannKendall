@@ -110,6 +110,24 @@ def test_seasonal_sens_slope(NoTrendData, TrendData, arbitrary_1d_data):
     assert result.slope == -0.08695652173913043
     assert result.intercept == 96.31159420289855
 
+def test_regional_test_respects_alpha():
+    data = np.array([
+        [17, 16],
+        [13, 15],
+        [16, 3],
+        [9, 10],
+        [5, 15],
+    ])
+
+    result_005 = mk.regional_test(data, alpha=0.05)
+    result_010 = mk.regional_test(data, alpha=0.10)
+
+    assert 0.05 < result_010.p < 0.10
+    assert result_005.h == False
+    assert result_005.trend == 'no trend'
+    assert result_010.h == True
+    assert result_010.trend == 'decreasing'
+
 def test_original_test(NoTrendData, TrendData, arbitrary_1d_data):
     # check with no trend data
     NoTrendRes = mk.original_test(NoTrendData)
