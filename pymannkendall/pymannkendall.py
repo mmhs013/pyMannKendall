@@ -693,7 +693,7 @@ def correlated_seasonal_test(x_old, period = 12 ,alpha = 0.05):
 
         x = x.reshape(int(len(x)/period),period)
     
-    trend, h, p, z, Tau, s, var_s, slope, intercept = correlated_multivariate_test(x)
+    trend, h, p, z, Tau, s, var_s, slope, intercept = correlated_multivariate_test(x, alpha=alpha)
 
     return res(trend, h, p, z, Tau, s, var_s, slope, intercept)
 
