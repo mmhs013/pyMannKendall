@@ -203,6 +203,7 @@ def seasonal_sens_slope(x_old, period=12):
       >>> slope,intercept = mk.seasonal_sens_slope(x, 12)
     """
     res = namedtuple('Seasonal_Sens_Slope_Test', ['slope','intercept'])
+    x_old = np.asanyarray(x_old)
     x, c = __preprocessing(x_old)
     n = len(x)
     
