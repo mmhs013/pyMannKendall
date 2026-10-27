@@ -722,6 +722,7 @@ def partial_test(x_old, alpha = 0.05):
     """
     res = namedtuple('Partial_Mann_Kendall_Test', ['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
     
+    x_old = np.asarray(x_old)
     x_proc, c = __preprocessing(x_old)
     x_proc, n = __missing_values_analysis(x_proc, method = 'skip')
     
